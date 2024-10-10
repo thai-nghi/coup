@@ -1,0 +1,46 @@
+services:
+  postgres:
+    container_name: postgres
+    image: 'postgres:15'
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - '5432:5432'
+    env_file:
+      - ./.dev.env
+    volumes:
+      - '~/pgsql:/var/lib/postgresql/data'
+    networks:
+      - default
+  
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    environment:
+      - POSTGRES_HOST=postgres
+    env_file:
+      - .dev.env
+    ports:
+      - "8000:8000"
+    links:
+      - postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  pgsql:
+    driver: local
