@@ -1,6 +1,6 @@
 services:
   postgres:
-    container_name: postgres
+    container_name: postgres-coup
     image: 'postgres:15'
     restart: always
     healthcheck:
@@ -10,23 +10,19 @@ services:
       retries: 5
     ports:
       - '5432:5432'
-    env_file:
-      - ./.dev.env
     volumes:
-      - '~/pgsql:/var/lib/postgresql/data'
+      - '~/pgsql-coup:/var/lib/postgresql/data'
     networks:
       - default
   
   backend:
-    container_name: backend
+    container_name: backend-coup
     build:
-      context: .
+      context: ..
       dockerfile: ./Dockerfile
     restart: always
     environment:
       - POSTGRES_HOST=postgres
-    env_file:
-      - .dev.env
     ports:
       - "8000:8000"
     links:
@@ -37,10 +33,4 @@ services:
     networks:
       - default
 
-networks:
-  default:
-    driver: bridge
 
-volumes:
-  pgsql:
-    driver: local

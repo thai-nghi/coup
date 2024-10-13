@@ -8,26 +8,25 @@ from sqlalchemy import (
     text,
     ForeignKey,
     PrimaryKeyConstraint,
+    Float,
+    Boolean
 )
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP, TEXT
 
 metadata_obj = MetaData()
 from src import schemas
 
-user_rank_enum = Enum(schemas.UserRank)
+item_type_enum = Enum(schemas.ItemType)
 
 user = Table(
     "user",
     metadata_obj,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("full_name", String, nullable=False),
+    Column("display_name", String, nullable=False),
     Column("email", String, nullable=False, unique=True, index=True),
     Column("password", String, nullable=True),
-    Column("points", Integer, nullable=False, default=0),
-    Column("total_points", Integer, nullable=False, default=0),
-    Column("city", String, nullable=False),
-    Column("country", String, nullable=False),
-    Column("rank", user_rank_enum, nullable=False, default=schemas.UserRank.ROOKIE),
+    Column("elo", Integer, nullable=False, default=0),
+    Column("coins", Integer, nullable=False, default=0),
 )
 
 
@@ -45,9 +44,11 @@ shop_item = Table(
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("name", String, nullable=False),
     Column("price", Integer, nullable=False),
-    Column("rank_to_unlock", user_rank_enum, nullable=False),
     Column("description", String, nullable=False),
     Column("banner_pic", String, nullable=False),
+    Column("item_type", item_type_enum, nullable=False),
+    Column("discount", Float, nullable=False, default = 0),
+    Column("active", Boolean, nullable=False, default = True)
 )
 
 user_inventory = Table(
@@ -59,15 +60,26 @@ user_inventory = Table(
     PrimaryKeyConstraint("user_id", "item_id", name="inventory_pk"),
 )
 
-user_point_gain = Table(
-    "user_point_gain",
+match_history = Table(
+    "match_history",
     metadata_obj,
-    Column("user_id", ForeignKey("user.id"), nullable=False),
-    Column("point", Integer, nullable=False),
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("player_one", ForeignKey("user.id"), nullable=False),
+    Column("player_two", ForeignKey("user.id"), nullable=False),
+    Column("replay", JSONB, nullable=False),
     Column(
-        "gain_at",
+        "match_time",
         TIMESTAMP(timezone=True),
         server_default=text("current_timestamp"),
         nullable=False,
     ),
+)
+
+elo_change = Table(
+    "elo_change",
+    metadata_obj,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("player_id", ForeignKey("user.id"), nullable=False),
+    Column("elo_change", Integer, nullable=False),
+    Column("match_id", ForeignKey("match_history.id"), nullable=True)
 )

@@ -1,12 +1,11 @@
 from pydantic import PostgresDsn
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
 
 
-from .core import config
+from ..core import config
 
 
 PG_URL = PostgresDsn.build(
@@ -23,3 +22,11 @@ engine = create_async_engine(PG_URL, future=True, echo=True)
 
 
 SessionFactory = async_sessionmaker(engine, autoflush=False, expire_on_commit=False)
+
+
+async def get_db():
+    db = SessionFactory()
+    try:
+        yield db
+    finally:
+        await db.close()

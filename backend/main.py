@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
-from src.routers import router
-
 from fastapi.middleware.cors import CORSMiddleware
+
+from src.endpoints.auth import router as auth_router
+from src.endpoints.shop import router as shop_router
 
 app = FastAPI(default_response_class=ORJSONResponse)
 
@@ -21,5 +22,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-app.include_router(router)
+for router in (auth_router, shop_router):
+    app.include_router(router)

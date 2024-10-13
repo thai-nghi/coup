@@ -11,6 +11,12 @@ class UserRank(enum.Enum):
     CHAMPION = 4
     LEGEND = 5
 
+class ItemType(enum.Enum):
+    AVATAR_FRAME = 1
+    CHESS_BOARD = 2
+    CHESS_BACK = 3
+    WIN_ANIMATION = 4
+    LOSE_ANIMATION = 5
 
 class UserBase(BaseModel):
     email: EmailStr
