@@ -1,4 +1,4 @@
 #!/bin/sh
-alembic -x db_url="postgresql+asyncpg://greenaden:test@${POSTGRES_HOST}/greenaden" upgrade head
+alembic -x db_url="postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${DB_PORT}/${POSTGRES_DB}" upgrade head
 
 uvicorn main:app --host 0.0.0.0 --port 8000

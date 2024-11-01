@@ -54,8 +54,8 @@ shop_item = Table(
 user_inventory = Table(
     "user_inventory",
     metadata_obj,
-    Column("user_id", ForeignKey("user.id"), nullable=False),
-    Column("item_id", ForeignKey("shop_item.id"), nullable=False),
+    Column("user_id", ForeignKey("user.id"), nullable=False, index=True),
+    Column("item_id", ForeignKey("shop_item.id"), nullable=False, index=True),
     Column("quantity", Integer, default=0),
     PrimaryKeyConstraint("user_id", "item_id", name="inventory_pk"),
 )
@@ -64,8 +64,8 @@ match_history = Table(
     "match_history",
     metadata_obj,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("player_one", ForeignKey("user.id"), nullable=False),
-    Column("player_two", ForeignKey("user.id"), nullable=False),
+    Column("player_one", ForeignKey("user.id"), nullable=False, index=True),
+    Column("player_two", ForeignKey("user.id"), nullable=False, index=True),
     Column("replay", JSONB, nullable=False),
     Column(
         "match_time",
@@ -79,7 +79,17 @@ elo_change = Table(
     "elo_change",
     metadata_obj,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("player_id", ForeignKey("user.id"), nullable=False),
+    Column("player_id", ForeignKey("user.id"), nullable=False, index=True),
     Column("elo_change", Integer, nullable=False),
     Column("match_id", ForeignKey("match_history.id"), nullable=True)
+)
+
+coin_change = Table(
+    "coin_change",
+    metadata_obj,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("player_id", ForeignKey("user.id"), nullable=False),
+    Column("coin_change", Integer, nullable=False),
+    Column("event_type", nullable=True),
+    Column("event_id", Integer)
 )

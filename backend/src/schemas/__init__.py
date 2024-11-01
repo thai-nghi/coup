@@ -20,8 +20,7 @@ class ItemType(enum.Enum):
 
 class UserBase(BaseModel):
     email: EmailStr
-    full_name: str
-    city: str
+    display_name: str
     country: str
 
 
@@ -31,9 +30,8 @@ class UserCreate(UserBase):
 
 class UserResponse(UserBase):
     id: int
-    points: int
-    rank: UserRank
-    total_points: int
+    elo: int
+    coins: int
 
 
 class GoogleCredentalData(BaseModel):

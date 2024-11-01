@@ -18,7 +18,7 @@ depends_on = None
 
 
 item_type_enum = postgresql.ENUM(
-    "AVATAR_FRAME", "CHESS_BOARD", "CHESS_BACK", "WIN_ANIMATION", "LOSE_ANIMATION"
+    "AVATAR_FRAME", "CHESS_BOARD", "CHESS_BACK", "WIN_ANIMATION", "LOSE_ANIMATION", name="item_type_enum", create_type=False
 )
 
 
@@ -70,8 +70,8 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("match_player_one_idx", "match_history", ["player_one"]))
-    op.create_index(op.f("match_player_two_idx", "match_history", ["player_two"]))
+    op.create_index(op.f("match_player_one_idx"), "match_history", ["player_one"])
+    op.create_index(op.f("match_player_two_idx"), "match_history", ["player_two"])
     op.create_table(
         "user_google_id",
         sa.Column("google_id", sa.String(), nullable=False),

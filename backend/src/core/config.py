@@ -3,7 +3,7 @@ import os
 
 class Settings(BaseSettings):
     POSTGRES_HOST: str = "127.0.0.1"
-    POSTGRES_PORT: str = 5432
+    DB_PORT: str = 5432
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
@@ -25,9 +25,17 @@ class DevSettings(Settings):
         env_file = '.dev.env'
         env_file_encoding = 'utf-8'
 
+
+class TestSettings(Settings):
+    class Config:
+        env_file = '.test.env'
+        env_file_encoding = 'utf-8'
+
 current_env = os.getenv("ENV", "dev")
 
-if current_env != "dev":
-    settings = Settings()
-else:
+if current_env == "dev":
     settings = DevSettings()
+elif current_env == "test":
+    settings = TestSettings()
+else:
+    settings = Settings()

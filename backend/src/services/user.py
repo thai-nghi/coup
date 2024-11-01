@@ -25,11 +25,9 @@ async def create_user_by_email(
     user_tbl = db_tables.user
 
     query = insert(user_tbl).values(
-        full_name=user_data.full_name,
+        display_name=user_data.display_name,
         email=user_data.email,
         password=hashed_password,
-        city=user_data.city,
-        country=user_data.country,
     )
 
     (await db_session.execute(query))
@@ -55,12 +53,9 @@ async def user_detail_by_email(
     query = select(
         user_tbl.c.id,
         user_tbl.c.email,
-        user_tbl.c.full_name,
-        user_tbl.c.points,
-        user_tbl.c.total_points,
-        user_tbl.c.city,
-        user_tbl.c.country,
-        user_tbl.c.rank,
+        user_tbl.c.display_name,
+        user_tbl.c.elo,
+        user_tbl.c.coins,
     ).where(user_tbl.c.email == email)
 
     user = (await db_session.execute(query)).first()
@@ -68,7 +63,7 @@ async def user_detail_by_email(
     if user is None:
         raise exceptions.NotFoundException
 
-    return schemas.UserResponse(**user._mapping)
+    return schemas.UserResponse(**user._mapping, country="Finland")
 
 
 async def get_user_by_google_id(
@@ -81,12 +76,9 @@ async def get_user_by_google_id(
         select(
             user_tbl.c.id,
             user_tbl.c.email,
-            user_tbl.c.full_name,
-            user_tbl.c.points,
-            user_tbl.c.total_points,
-            user_tbl.c.city,
-            user_tbl.c.country,
-            user_tbl.c.rank,
+            user_tbl.c.display_name,
+            user_tbl.c.elo,
+            user_tbl.c.coins,
         )
         .select_from(user_tbl.join(google_tbl, google_tbl.c.user_id == user_tbl.c.id))
         .where(google_tbl.c.google_id == google_id)
@@ -94,7 +86,7 @@ async def get_user_by_google_id(
 
     user = (await db_session.execute(query)).first()
 
-    return schemas.UserResponse(**user._mapping) if user is not None else None
+    return schemas.UserResponse(**user._mapping, country="Finland") if user is not None else None
 
 
 async def user_by_id(db_session: AsyncSession, id: int) -> schemas.UserResponse:
@@ -103,12 +95,9 @@ async def user_by_id(db_session: AsyncSession, id: int) -> schemas.UserResponse:
     query = select(
         user_tbl.c.id,
         user_tbl.c.email,
-        user_tbl.c.full_name,
-        user_tbl.c.points,
-        user_tbl.c.total_points,
-        user_tbl.c.city,
-        user_tbl.c.country,
-        user_tbl.c.rank,
+        user_tbl.c.display_name,
+        user_tbl.c.elo,
+        user_tbl.c.coins,
     ).where(user_tbl.c.id == id)
 
     user = (await db_session.execute(query)).first()
@@ -116,7 +105,7 @@ async def user_by_id(db_session: AsyncSession, id: int) -> schemas.UserResponse:
     if user is None:
         raise exceptions.NotFoundException
 
-    return schemas.UserResponse(**user._mapping)
+    return schemas.UserResponse(**user._mapping, country="Finland")
 
 
 async def create_user_by_google_id(

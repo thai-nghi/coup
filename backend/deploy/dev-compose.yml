@@ -1,3 +1,5 @@
+name: coup-dev
+
 services:
   postgres:
     extends:
