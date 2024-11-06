@@ -1,9 +1,9 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 import os
 
 class Settings(BaseSettings):
     POSTGRES_HOST: str = "127.0.0.1"
-    DB_PORT: str = 5432
+    DB_PORT: int = 5432
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str

@@ -17,6 +17,7 @@ metadata_obj = MetaData()
 from src import schemas
 
 item_type_enum = Enum(schemas.ItemType)
+coin_change_enum = Enum(schemas.CoinChangeEventType)
 
 user = Table(
     "user",
@@ -27,6 +28,16 @@ user = Table(
     Column("password", String, nullable=True),
     Column("elo", Integer, nullable=False, default=0),
     Column("coins", Integer, nullable=False, default=0),
+    Column("country", ForeignKey("countries.id"), nullable=False, index=True),
+)
+
+admin_user = Table(
+    "admin_user",
+    metadata_obj,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("display_name", String, nullable=False),
+    Column("email", String, nullable=False, unique=True, index=True),
+    Column("password", String, nullable=True),
 )
 
 
@@ -90,6 +101,14 @@ coin_change = Table(
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("player_id", ForeignKey("user.id"), nullable=False),
     Column("coin_change", Integer, nullable=False),
-    Column("event_type", nullable=True),
+    Column("event_type", coin_change_enum,nullable=True),
     Column("event_id", Integer)
+)
+
+
+countries = Table(
+    "countries",
+    metadata_obj,
+    Column("id", Integer, primary_key=True),
+    Column("label", String, nullable=False),
 )

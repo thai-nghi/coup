@@ -11,14 +11,14 @@ from ..core import config
 def create_engine_from_setting(setting: config.Settings):
     PG_URL = PostgresDsn.build(
         scheme="postgresql+asyncpg",
-        user=setting.POSTGRES_USER,
+        username=setting.POSTGRES_USER,
         password=setting.POSTGRES_PASSWORD,
         host=setting.POSTGRES_HOST,
         port=setting.DB_PORT,
-        path=f"/{setting.POSTGRES_DB}",
+        path=f"{setting.POSTGRES_DB}",
     )
 
-    return create_async_engine(PG_URL, future=True, echo=True)
+    return create_async_engine(str(PG_URL), future=True, echo=True)
 
 
 engine = create_engine_from_setting(config.settings)

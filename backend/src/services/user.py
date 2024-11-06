@@ -28,6 +28,7 @@ async def create_user_by_email(
         display_name=user_data.display_name,
         email=user_data.email,
         password=hashed_password,
+        country=user_data.country_id,
     )
 
     (await db_session.execute(query))
@@ -56,6 +57,7 @@ async def user_detail_by_email(
         user_tbl.c.display_name,
         user_tbl.c.elo,
         user_tbl.c.coins,
+        user_tbl.c.country.label("country_id"),
     ).where(user_tbl.c.email == email)
 
     user = (await db_session.execute(query)).first()
@@ -63,7 +65,7 @@ async def user_detail_by_email(
     if user is None:
         raise exceptions.NotFoundException
 
-    return schemas.UserResponse(**user._mapping, country="Finland")
+    return schemas.UserResponse(**user._mapping)
 
 
 async def get_user_by_google_id(
@@ -79,6 +81,7 @@ async def get_user_by_google_id(
             user_tbl.c.display_name,
             user_tbl.c.elo,
             user_tbl.c.coins,
+            user_tbl.c.country.label("country_id"),
         )
         .select_from(user_tbl.join(google_tbl, google_tbl.c.user_id == user_tbl.c.id))
         .where(google_tbl.c.google_id == google_id)
@@ -86,7 +89,7 @@ async def get_user_by_google_id(
 
     user = (await db_session.execute(query)).first()
 
-    return schemas.UserResponse(**user._mapping, country="Finland") if user is not None else None
+    return schemas.UserResponse(**user._mapping) if user is not None else None
 
 
 async def user_by_id(db_session: AsyncSession, id: int) -> schemas.UserResponse:
@@ -98,6 +101,7 @@ async def user_by_id(db_session: AsyncSession, id: int) -> schemas.UserResponse:
         user_tbl.c.display_name,
         user_tbl.c.elo,
         user_tbl.c.coins,
+        user_tbl.c.country.label("country_id"),
     ).where(user_tbl.c.id == id)
 
     user = (await db_session.execute(query)).first()
@@ -105,7 +109,7 @@ async def user_by_id(db_session: AsyncSession, id: int) -> schemas.UserResponse:
     if user is None:
         raise exceptions.NotFoundException
 
-    return schemas.UserResponse(**user._mapping, country="Finland")
+    return schemas.UserResponse(**user._mapping)
 
 
 async def create_user_by_google_id(
@@ -120,7 +124,7 @@ async def create_user_by_google_id(
         email=google_data.email,
         password=None,
         city="Lahti",
-        country="Finland",
+        country=10,
     )
 
     inserted_id = (await db_session.execute(query)).inserted_primary_key[0]
