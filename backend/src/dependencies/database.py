@@ -18,7 +18,7 @@ def create_engine_from_setting(setting: config.Settings):
         path=f"{setting.POSTGRES_DB}",
     )
 
-    return create_async_engine(str(PG_URL), future=True, echo=True)
+    return create_async_engine(str(PG_URL) + "?prepared_statement_cache_size=0", future=True, echo=True)
 
 
 engine = create_engine_from_setting(config.settings)

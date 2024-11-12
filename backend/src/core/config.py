@@ -14,6 +14,10 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str
 
+    GAME_SERVER_ACCESS: str
+
+    QUERY_CACHE_SIZE: int = 1200
+
     class Config:
         env_file = '.dev.env'
         env_file_encoding = 'utf-8'
@@ -27,6 +31,7 @@ class DevSettings(Settings):
 
 
 class TestSettings(Settings):
+    QUERY_CACHE_SIZE: int = 0
     class Config:
         env_file = '.test.env'
         env_file_encoding = 'utf-8'

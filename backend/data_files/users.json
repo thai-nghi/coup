@@ -1,0 +1,18 @@
+[
+    {
+        "display_name": "Amiya",
+        "email": "amiya@rhodesisland.ark",
+        "password": "ILoveRhodesIsland",
+        "elo": 1200,
+        "coins": 800,
+        "country": 1
+    },
+    {
+        "display_name": "Blaze",
+        "email": "blaze@rhodesisland.ark",
+        "password": "ILoveRhodesIsland",
+        "elo": 1000,
+        "coins": 0,
+        "country": 1
+    }
+]

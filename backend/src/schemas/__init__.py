@@ -24,6 +24,14 @@ class CoinChangeEventType(enum.Enum):
     PROMOTION = 3
     ADMIN = 4
 
+class MatchResult(enum.Enum):
+    LOSE = 0
+    WIN = 1
+
+class MatchType(enum.Enum):
+    RANKED = 0
+    LOBBY = 1
+
 class UserBase(BaseModel):
     email: EmailStr
     display_name: str
@@ -108,5 +116,17 @@ class ShopItem(BaseModel):
     name: str
     description: str
     price: int
-    rank_to_unlock: UserRank
     banner_pic: str
+
+class PlayerResult(BaseModel):
+    player_id: int
+    elo_change: int
+    result: MatchResult
+    coin_change: int
+
+class MatchResultIn(BaseModel):
+    match_id: int
+    match_replay: str
+    move_first_player: int
+    player_result: list[PlayerResult]
+    type: MatchType

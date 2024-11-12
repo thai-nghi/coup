@@ -47,7 +47,7 @@ async def register(
 
     await db_session.commit()
 
-    return {"token": token_pair.access.token, "user_detail": created_user.dict()}
+    return {"token": token_pair.access.token, "user_detail": created_user.model_dump()}
 
 
 
@@ -103,7 +103,7 @@ async def login(
 
     return {
         "token": token_pair.access.token,
-        "user_detail": user.dict(),
+        "user_detail": user.model_dump(),
         "avatar": "",
     }
 

@@ -34,7 +34,7 @@ async def buy_item(db_session: AsyncSession, user_id: int, item_id: int, price: 
 
     await db_session.execute(query)
 
-    query = update(user_tbl).returning(user_tbl.c.points).where(user_tbl.c.id == user_id).values(points = user_tbl.c.points - price)
+    query = update(user_tbl).returning(user_tbl.c.coins).where(user_tbl.c.id == user_id).values(coins = user_tbl.c.coins - price)
 
     new_point = (await db_session.execute(query)).scalar()
 

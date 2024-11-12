@@ -6,8 +6,11 @@ from main import app
 import pytest_asyncio
 from pytest_asyncio import is_async_test
 import httpx
+import json
+from src.core.hash import get_password_hash, verify_password
+from src import db_tables
+from sqlalchemy import text, insert
 
-from sqlalchemy import text
 
 def pytest_collection_modifyitems(items):
     pytest_asyncio_tests = (item for item in items if is_async_test(item))
@@ -38,15 +41,41 @@ async def test_db(test_settings):
     async with engine.begin() as connection:
         await connection.run_sync(run_upgrade)
 
-        with open("./sql_scripts/countries.sql") as file:
+        with open("./data_files/countries.sql") as file:
             query = text(file.read())
 
         await connection.execute(query)
 
-    yield
+    yield engine
 
     async with engine.begin() as connection:
         await connection.run_sync(run_downgrade)
+
+
+@pytest_asyncio.fixture(loop_scope="session", scope="function")
+async def user_factory(test_db):
+    with open("./data_files/users.json") as file:
+        users = json.load(file)
+
+    insert_users = [
+        {**user, "password": get_password_hash(user["password"])} for user in users
+    ]
+
+    async with test_db.begin() as connection:
+        await connection.execute(insert(db_tables.user).values(insert_users))
+
+    return {user["display_name"]: user for user in users}
+
+
+@pytest_asyncio.fixture(loop_scope="session", scope="function")
+async def shop_items(test_db):
+    with open("./data_files/shop.json") as file:
+        items = json.load(file)
+
+    async with test_db.begin() as connection:
+        await connection.execute(insert(db_tables.shop_item).values(items))
+
+    return sorted(items, key=lambda item: item["name"])
 
 
 @pytest_asyncio.fixture(loop_scope="session", scope="function")
@@ -55,22 +84,37 @@ def test_app(test_db):
 
 
 @pytest_asyncio.fixture(loop_scope="session", scope="function")
-async def authenticated_client(test_app):
-    new_user_data = {
-        "email": "test@gmail.com",
-        "display_name": "Test Full name",
-        "country_id": "10",
-    }
-    async with httpx.AsyncClient(app=test_app, base_url="http://coup.test") as client:
-        result = await client.post(
-            "/auth/register",
-            json={**new_user_data, "password": "123", "confirm_password": "123"},
-        )
-        assert result.status_code == 200
+async def client_factory(test_app, user_factory):
+    async def create_client(user_name):
+        if user_name not in user_factory:
+            async with httpx.AsyncClient(
+                app=test_app, base_url="http://coup.test"
+            ) as client:
+                yield client
+        else:
+            user_data = user_factory[user_name]
+            async with httpx.AsyncClient(
+                app=test_app, base_url="http://coup.test"
+            ) as client:
+                result = await client.post(
+                    "/auth/login",
+                    json={"email": user_data["email"], "password": user_data["password"]},
+                )
+                assert result.status_code == 200
 
-        data = result.json()
-    
-    async with httpx.AsyncClient(app=test_app, base_url="http://coup.test", headers={
-        "Authorization": f"Bearer {data['token']}"
-    }, follow_redirects=True) as client:
-        yield client
+            data = result.json()
+
+            async with httpx.AsyncClient(
+                app=test_app,
+                base_url="http://coup.test",
+                headers={"Authorization": f"Bearer {data['token']}"},
+                follow_redirects=True
+            ) as client:
+                yield client
+
+    return create_client
+
+@pytest_asyncio.fixture(loop_scope="session", scope="function")
+async def amiya_client(client_factory):
+    async for item in client_factory("Amiya"):
+        yield item

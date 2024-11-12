@@ -18,7 +18,7 @@ depends_on = None
 
 
 item_type_enum = postgresql.ENUM(
-    "AVATAR_FRAME", "CHESS_BOARD", "CHESS_BACK", "WIN_ANIMATION", "LOSE_ANIMATION", name="item_type_enum", create_type=False
+    "AVATAR_FRAME", "CHESS_BOARD", "CHESS_BACK", "WIN_ANIMATION", "LOSE_ANIMATION", name="itemtype", create_type=False
 )
 
 

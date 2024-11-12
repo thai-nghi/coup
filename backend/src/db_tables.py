@@ -18,6 +18,8 @@ from src import schemas
 
 item_type_enum = Enum(schemas.ItemType)
 coin_change_enum = Enum(schemas.CoinChangeEventType)
+match_type_enum = Enum(schemas.MatchType)
+result_enum = Enum(schemas.MatchResult)
 
 user = Table(
     "user",
@@ -71,12 +73,10 @@ user_inventory = Table(
     PrimaryKeyConstraint("user_id", "item_id", name="inventory_pk"),
 )
 
-match_history = Table(
-    "match_history",
+matches = Table(
+    "matches",
     metadata_obj,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("player_one", ForeignKey("user.id"), nullable=False, index=True),
-    Column("player_two", ForeignKey("user.id"), nullable=False, index=True),
     Column("replay", JSONB, nullable=False),
     Column(
         "match_time",
@@ -84,7 +84,18 @@ match_history = Table(
         server_default=text("current_timestamp"),
         nullable=False,
     ),
+    Column("type", match_type_enum, nullable=False)
 )
+
+player_matches = Table(
+    "player_matches",
+    metadata_obj,
+    Column("player_id", ForeignKey("user.id"), nullable=False, index=True),
+    Column("match_id", ForeignKey("matches.id"), nullable=False),
+    Column("result", result_enum, nullable=False),
+    PrimaryKeyConstraint("player_id", "match_id", name="player_match_pk"),
+)
+
 
 elo_change = Table(
     "elo_change",
@@ -92,7 +103,7 @@ elo_change = Table(
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("player_id", ForeignKey("user.id"), nullable=False, index=True),
     Column("elo_change", Integer, nullable=False),
-    Column("match_id", ForeignKey("match_history.id"), nullable=True)
+    Column("match_id", ForeignKey("matches.id"), nullable=True)
 )
 
 coin_change = Table(

@@ -47,8 +47,6 @@ async def test_login(test_app):
             "password": "456"
         })
 
-        print(login_result.text)
-
         assert login_result.status_code == 200
 
         data = login_result.json()
@@ -57,3 +55,12 @@ async def test_login(test_app):
 
         for key, value in new_user_data.items():
             assert user[key] == value
+
+@pytest.mark.asyncio
+async def test_user_info(amiya_client):
+    response = await amiya_client.get("/user/")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data['display_name'] == "Amiya"
