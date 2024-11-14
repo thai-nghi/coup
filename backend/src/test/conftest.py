@@ -1,15 +1,16 @@
+import json
+
+import httpx
 import pytest
-from src.core.config import settings
-from src.dependencies.database import create_engine_from_setting
+import pytest_asyncio
 from alembic import command, config
 from main import app
-import pytest_asyncio
 from pytest_asyncio import is_async_test
-import httpx
-import json
-from src.core.hash import get_password_hash, verify_password
+from sqlalchemy import insert, text
 from src import db_tables
-from sqlalchemy import text, insert
+from src.core.config import settings
+from src.core.hash import get_password_hash, verify_password
+from src.dependencies.database import create_engine_from_setting
 
 
 def pytest_collection_modifyitems(items):
@@ -98,7 +99,10 @@ async def client_factory(test_app, user_factory):
             ) as client:
                 result = await client.post(
                     "/auth/login",
-                    json={"email": user_data["email"], "password": user_data["password"]},
+                    json={
+                        "email": user_data["email"],
+                        "password": user_data["password"],
+                    },
                 )
                 assert result.status_code == 200
 
@@ -108,13 +112,35 @@ async def client_factory(test_app, user_factory):
                 app=test_app,
                 base_url="http://coup.test",
                 headers={"Authorization": f"Bearer {data['token']}"},
-                follow_redirects=True
+                follow_redirects=True,
             ) as client:
                 yield client
 
     return create_client
 
+
 @pytest_asyncio.fixture(loop_scope="session", scope="function")
 async def amiya_client(client_factory):
     async for item in client_factory("Amiya"):
         yield item
+
+
+@pytest_asyncio.fixture(loop_scope="session", scope="function")
+async def blaze_client(client_factory):
+    async for item in client_factory("Blaze"):
+        yield item
+
+
+@pytest_asyncio.fixture(loop_scope="session", scope="function")
+async def match_history(test_app, test_settings):
+    with open("./data_files/match_history.json") as file:
+        matches = json.load(file)
+
+    async with httpx.AsyncClient(
+        app=test_app,
+        base_url="http://coup.test",
+        headers={"Authorization": f"Bearer {test_settings.GAME_SERVER_ACCESS}"},
+    ) as client:
+        for match in matches:
+            response = await client.post("/admin/game/result", json=match)
+            assert response.status_code == 200

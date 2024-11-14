@@ -1,20 +1,15 @@
 from fastapi import FastAPI
-from fastapi.responses import ORJSONResponse
-
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi.responses import ORJSONResponse
+from src.endpoints.admin import router as admin_router
 from src.endpoints.auth import router as auth_router
+from src.endpoints.game import router as game_router
 from src.endpoints.shop import router as shop_router
 from src.endpoints.user import router as user_router
-from src.endpoints.game import router as game_router
 
 app = FastAPI(default_response_class=ORJSONResponse)
 
-origins = [
-    "http://localhost",
-    "http://localhost:8080",
-    "*"
-]
+origins = ["http://localhost", "http://localhost:8080", "*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,5 +19,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-for router in (auth_router, shop_router, user_router, game_router):
+for router in (auth_router, shop_router, user_router, game_router, admin_router):
     app.include_router(router)

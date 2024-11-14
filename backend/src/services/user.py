@@ -1,12 +1,7 @@
-from src import db_tables
-from src import schemas
-from src import exceptions
+from sqlalchemy import insert, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-)
-
-from sqlalchemy import select, insert
+from src import db_tables, exceptions, schemas
 
 
 async def user_exist_by_email(db_session: AsyncSession, email: str) -> bool:

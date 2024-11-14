@@ -65,3 +65,6 @@ watchfiles==0.19.0
 websockets==11.0.3
 pytest-asyncio==0.24.0 
 pydantic-settings==2.6.1
+black==24.10.0
+isort==5.13.2
+pre-commit

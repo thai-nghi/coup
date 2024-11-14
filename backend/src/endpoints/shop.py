@@ -1,18 +1,16 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, Path
 
+from fastapi import APIRouter, Depends, Path
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src import schemas
 from src.dependencies.database import get_db
 from src.dependencies.user import get_current_user
-
 from src.exceptions import BadRequestException
-from src import schemas
-
 from src.services import shop as shop_service
 
-
 router = APIRouter(prefix="/shop", dependencies=[Depends(get_current_user)])
+
 
 @router.get("/")
 async def shop_items(
@@ -34,7 +32,9 @@ async def buy_item(
     if user.coins < item_detail.price:
         raise BadRequestException("User does not have enough coins")
 
-    new_point = await shop_service.buy_item(db_session, user.id, item_id, item_detail.price)
+    new_point = await shop_service.buy_item(
+        db_session, user.id, item_id, item_detail.price
+    )
 
     await db_session.commit()
 

@@ -1,7 +1,8 @@
-from typing import Any
-from datetime import datetime
-from pydantic import BaseModel, field_validator, EmailStr, model_validator
 import enum
+from datetime import datetime
+from typing import Any
+
+from pydantic import BaseModel, EmailStr, field_validator, model_validator
 
 
 class UserRank(enum.Enum):
@@ -11,6 +12,7 @@ class UserRank(enum.Enum):
     CHAMPION = 4
     LEGEND = 5
 
+
 class ItemType(enum.Enum):
     AVATAR_FRAME = 1
     CHESS_BOARD = 2
@@ -18,19 +20,23 @@ class ItemType(enum.Enum):
     WIN_ANIMATION = 4
     LOSE_ANIMATION = 5
 
+
 class CoinChangeEventType(enum.Enum):
     MATCH = 1
     SHOP = 2
     PROMOTION = 3
     ADMIN = 4
 
+
 class MatchResult(enum.Enum):
     LOSE = 0
     WIN = 1
 
+
 class MatchType(enum.Enum):
     RANKED = 0
     LOBBY = 1
+
 
 class UserBase(BaseModel):
     email: EmailStr
@@ -60,28 +66,26 @@ class UserRegister(UserBase):
     password: str
     confirm_password: str
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def verify_password_match(self):
 
         pw1 = self.password
         pw2 = self.confirm_password
-        
+
         if pw1 is not None and pw2 is not None and pw1 != pw2:
             raise ValueError("The two passwords did not match.")
-        
-        return self
 
+        return self
 
 
 class UserLogin(BaseModel):
     email: EmailStr | None = None
     password: str | None = None
     google_token: str | None = None
-    
-    @model_validator(mode='before')
+
+    @model_validator(mode="before")
     @classmethod
     def ensure_credentals(cls, values):
-        print(values)
         if "username" in values:
             values["email"] = values["username"]
         if "email" not in values and "google_token" not in values:
@@ -90,6 +94,7 @@ class UserLogin(BaseModel):
             raise ValueError("Password is required for login with email")
 
         return values
+
 
 class JwtTokenSchema(BaseModel):
     token: str
@@ -105,11 +110,13 @@ class TokenPair(BaseModel):
 class SuccessResponseScheme(BaseModel):
     msg: str
 
+
 class LeaderboardEntry(BaseModel):
     total_points: int
     full_name: str
     rank: UserRank
     id: int
+
 
 class ShopItem(BaseModel):
     id: int
@@ -118,15 +125,23 @@ class ShopItem(BaseModel):
     price: int
     banner_pic: str
 
+
 class PlayerResult(BaseModel):
     player_id: int
     elo_change: int
     result: MatchResult
     coin_change: int
 
+
 class MatchResultIn(BaseModel):
     match_id: int
     match_replay: str
     move_first_player: int
     player_result: list[PlayerResult]
+    type: MatchType
+
+
+class MatchHistoryEntry(PlayerResult):
+    match_id: int
+    match_time: datetime
     type: MatchType

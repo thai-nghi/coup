@@ -1,5 +1,7 @@
-from pydantic_settings import BaseSettings
 import os
+
+from pydantic_settings import BaseSettings
+
 
 class Settings(BaseSettings):
     POSTGRES_HOST: str = "127.0.0.1"
@@ -19,22 +21,24 @@ class Settings(BaseSettings):
     QUERY_CACHE_SIZE: int = 1200
 
     class Config:
-        env_file = '.dev.env'
-        env_file_encoding = 'utf-8'
+        env_file = ".dev.env"
+        env_file_encoding = "utf-8"
 
 
 class DevSettings(Settings):
-    
+
     class Config:
-        env_file = '.dev.env'
-        env_file_encoding = 'utf-8'
+        env_file = ".dev.env"
+        env_file_encoding = "utf-8"
 
 
 class TestSettings(Settings):
     QUERY_CACHE_SIZE: int = 0
+
     class Config:
-        env_file = '.test.env'
-        env_file_encoding = 'utf-8'
+        env_file = ".test.env"
+        env_file_encoding = "utf-8"
+
 
 current_env = os.getenv("ENV", "dev")
 

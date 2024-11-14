@@ -1,17 +1,6 @@
-from sqlalchemy import (
-    MetaData,
-    Table,
-    Column,
-    Integer,
-    String,
-    Enum,
-    text,
-    ForeignKey,
-    PrimaryKeyConstraint,
-    Float,
-    Boolean
-)
-from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP, TEXT
+from sqlalchemy import (Boolean, Column, Enum, Float, ForeignKey, Integer,
+                        MetaData, PrimaryKeyConstraint, String, Table, text)
+from sqlalchemy.dialects.postgresql import JSONB, TEXT, TIMESTAMP
 
 metadata_obj = MetaData()
 from src import schemas
@@ -60,8 +49,8 @@ shop_item = Table(
     Column("description", String, nullable=False),
     Column("banner_pic", String, nullable=False),
     Column("item_type", item_type_enum, nullable=False),
-    Column("discount", Float, nullable=False, default = 0),
-    Column("active", Boolean, nullable=False, default = True)
+    Column("discount", Float, nullable=False, default=0),
+    Column("active", Boolean, nullable=False, default=True),
 )
 
 user_inventory = Table(
@@ -84,7 +73,7 @@ matches = Table(
         server_default=text("current_timestamp"),
         nullable=False,
     ),
-    Column("type", match_type_enum, nullable=False)
+    Column("type", match_type_enum, nullable=False),
 )
 
 player_matches = Table(
@@ -103,7 +92,7 @@ elo_change = Table(
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("player_id", ForeignKey("user.id"), nullable=False, index=True),
     Column("elo_change", Integer, nullable=False),
-    Column("match_id", ForeignKey("matches.id"), nullable=True)
+    Column("match_id", ForeignKey("matches.id"), nullable=True),
 )
 
 coin_change = Table(
@@ -112,8 +101,8 @@ coin_change = Table(
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("player_id", ForeignKey("user.id"), nullable=False),
     Column("coin_change", Integer, nullable=False),
-    Column("event_type", coin_change_enum,nullable=True),
-    Column("event_id", Integer)
+    Column("event_type", coin_change_enum, nullable=True),
+    Column("event_id", Integer),
 )
 
 

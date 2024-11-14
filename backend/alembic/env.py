@@ -1,10 +1,11 @@
-import os
 import asyncio
+import os
 from logging.config import fileConfig
 
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
-from sqlalchemy.ext.asyncio import async_engine_from_config, create_async_engine
+from sqlalchemy.ext.asyncio import (async_engine_from_config,
+                                    create_async_engine)
 
 from alembic import context
 from src import db_tables
@@ -29,10 +30,10 @@ target_metadata = db_tables.metadata_obj
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-cmd_line_url = context.get_x_argument(
-    as_dictionary=True).get('db_url')
+cmd_line_url = context.get_x_argument(as_dictionary=True).get("db_url")
 
 print(cmd_line_url)
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
