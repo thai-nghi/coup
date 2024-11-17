@@ -38,10 +38,12 @@ async def watch_game():
     pass
 
 
-@router.get("/lobby")
-async def list_lobbies():
-    """ """
-    pass
+@router.get("/lobby", response_model=list[schemas.NewMatchData])
+async def list_lobbies(
+    page: Annotated[int, Query()] = 1,
+    page_size: Annotated[int, Query()] = 20,
+) -> schemas.NewMatchData:
+    return await game.live_match_list(page=page, page_size=page_size)
 
 
 @router.get("/history", response_model=response.MatchHistory)

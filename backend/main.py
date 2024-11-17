@@ -6,6 +6,7 @@ from src.endpoints.auth import router as auth_router
 from src.endpoints.game import router as game_router
 from src.endpoints.shop import router as shop_router
 from src.endpoints.user import router as user_router
+from src.endpoints.webhook import router as webhook_router
 
 app = FastAPI(default_response_class=ORJSONResponse)
 
@@ -19,5 +20,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-for router in (auth_router, shop_router, user_router, game_router, admin_router):
+for router in (
+    auth_router,
+    shop_router,
+    user_router,
+    game_router,
+    admin_router,
+    webhook_router,
+):
     app.include_router(router)

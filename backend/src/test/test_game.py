@@ -5,7 +5,28 @@ from src.schemas import response
 
 
 @pytest.mark.asyncio
-async def test_submit_result(test_app, test_settings, amiya_client):
+async def test_new_match(test_app, test_settings):
+    async with httpx.AsyncClient(
+        app=test_app,
+        base_url="http://coup.test",
+        headers={"Authorization": f"Bearer {test_settings.GAME_SERVER_ACCESS}"},
+    ) as client:
+        response = await client.post(
+            "/webhooks/game/new_game",
+            json={
+                "match_id": 1,
+                "player_data": [
+                    {"player_id": 1, "elo": 1010, "display_name": "Amiya"},
+                    {"player_id": 2, "elo": 1010, "display_name": "Blaze"},
+                ],
+            },
+        )
+
+    assert response.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_submit_result(test_app, test_settings, amiya_client, live_matches):
 
     amiya_profile_response = await amiya_client.get("/user/")
     amiya_profile_start = amiya_profile_response.json()
@@ -16,7 +37,7 @@ async def test_submit_result(test_app, test_settings, amiya_client):
         headers={"Authorization": f"Bearer {test_settings.GAME_SERVER_ACCESS}"},
     ) as client:
         response = await client.post(
-            "/admin/game/result",
+            "/webhooks/game/result",
             json={
                 "match_id": 1,
                 "match_replay": "",
@@ -81,3 +102,16 @@ async def test_match_history(amiya_client, match_history):
     assert history_data.page_size == 20
     print(history_data.matches)
     assert len(history_data.matches) == 3
+
+
+@pytest.mark.asyncio
+async def test_live_matches(amiya_client, live_matches):
+    live_matches_response = await amiya_client.get("game/lobby")
+
+    assert live_matches_response.status_code == 200
+    matches = live_matches_response.json()
+
+    assert len(matches) == len(live_matches)
+
+    for index in range(len(live_matches)):
+        assert matches[index]["match_id"] == live_matches[index]["match_id"]

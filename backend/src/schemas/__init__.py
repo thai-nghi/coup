@@ -145,3 +145,14 @@ class MatchHistoryEntry(PlayerResult):
     match_id: int
     match_time: datetime
     type: MatchType
+
+
+class PlayerSummary(BaseModel):
+    player_id: int
+    display_name: str
+    elo: int
+
+
+class NewMatchData(BaseModel):
+    match_id: int
+    player_data: list[PlayerSummary]

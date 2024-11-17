@@ -19,3 +19,11 @@ async def submit_result(
     await game.record_match_result(db_session, match_data)
 
     await db_session.commit()
+
+
+@router.post("/new_game")
+async def new_game(request: Request, match_data: schemas.NewMatchData):
+    if request.headers.get("Authorization") != f"Bearer {settings.GAME_SERVER_ACCESS}":
+        raise AuthFailedException("Not authorized for this endpoint")
+
+    await game.record_live_match(match_data)

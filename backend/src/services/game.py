@@ -1,12 +1,18 @@
+from collections import OrderedDict
+
 from sqlalchemy import and_, cte, func, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from src import db_tables, exceptions, schemas
 from src.schemas import response
 
+live_matches = OrderedDict()
+
 
 async def record_match_result(
     db_session: AsyncSession, match_data: schemas.MatchResultIn
 ):
+    live_matches.pop(match_data.match_id)
+
     match_tbl = db_tables.matches
     player_match_tbl = db_tables.player_matches
     elo_change_tbl = db_tables.elo_change
@@ -144,3 +150,17 @@ async def user_match_history_summary(
     return response.MatchHistorySummary(
         win=summary.win, loss=summary.loss, total_match=summary.win + summary.loss
     )
+
+
+async def record_live_match(
+    match_data: schemas.NewMatchData,
+):
+    live_matches[match_data.match_id] = match_data
+
+
+async def live_match_list(
+    page: int = 1, page_size: int = 20
+) -> list[schemas.NewMatchData]:
+    start_index = (page - 1) * page_size
+
+    return list(live_matches.values())[start_index : start_index + page_size]

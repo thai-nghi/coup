@@ -132,9 +132,9 @@ async def blaze_client(client_factory):
 
 
 @pytest_asyncio.fixture(loop_scope="session", scope="function")
-async def match_history(test_app, test_settings):
+async def live_matches(test_app, test_settings):
     with open("./data_files/match_history.json") as file:
-        matches = json.load(file)
+        matches = json.load(file)["live"]
 
     async with httpx.AsyncClient(
         app=test_app,
@@ -142,5 +142,22 @@ async def match_history(test_app, test_settings):
         headers={"Authorization": f"Bearer {test_settings.GAME_SERVER_ACCESS}"},
     ) as client:
         for match in matches:
-            response = await client.post("/admin/game/result", json=match)
+            response = await client.post("/webhooks/game/new_game", json=match)
+            assert response.status_code == 200
+
+    return matches
+
+
+@pytest_asyncio.fixture(loop_scope="session", scope="function")
+async def match_history(test_app, test_settings, live_matches):
+    with open("./data_files/match_history.json") as file:
+        matches = json.load(file)["finished"]
+
+    async with httpx.AsyncClient(
+        app=test_app,
+        base_url="http://coup.test",
+        headers={"Authorization": f"Bearer {test_settings.GAME_SERVER_ACCESS}"},
+    ) as client:
+        for match in matches:
+            response = await client.post("/webhooks/game/result", json=match)
             assert response.status_code == 200
