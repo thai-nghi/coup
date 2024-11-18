@@ -1,23 +1,16 @@
 from typing import Annotated
-from fastapi import APIRouter, HTTPException, Depends, Response
 
+import httpx
+from fastapi import APIRouter, Depends, HTTPException, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.dependencies.database import get_db
-
-from src.core.hash import get_password_hash, verify_password
-from src.core.jwt import (
-    create_token_pair,
-    add_refresh_token_cookie,
-)
-from src.exceptions import BadRequestException
 from src import schemas
-
-
+from src.core.hash import get_password_hash, verify_password
+from src.core.jwt import add_refresh_token_cookie, create_token_pair
+from src.dependencies.database import get_db
+from src.exceptions import BadRequestException
 from src.services import user as user_service
-
-import httpx
 
 router = APIRouter(prefix="/auth")
 
@@ -47,11 +40,12 @@ async def register(
 
     await db_session.commit()
 
-    return {"token": token_pair.access.token, "user_detail": created_user.dict()}
+    return {"token": token_pair.access.token, "user_detail": created_user.model_dump()}
 
 
-
-async def handle_google_login(google_token: str, db_session: AsyncSession) -> schemas.UserResponse:
+async def handle_google_login(
+    google_token: str, db_session: AsyncSession
+) -> schemas.UserResponse:
     """
     Handle login with google
     """
@@ -76,6 +70,7 @@ async def handle_google_login(google_token: str, db_session: AsyncSession) -> sc
 
     return user
 
+
 @router.post("/login")
 async def login(
     data: schemas.UserLogin,
@@ -85,7 +80,7 @@ async def login(
     if data.google_token is not None:
         # login with google
         user = await handle_google_login(data.google_token, db_session)
-        
+
     if data.email is not None:
         # login with email
         password = await user_service.user_password_by_email(db_session, data.email)
@@ -103,7 +98,7 @@ async def login(
 
     return {
         "token": token_pair.access.token,
-        "user_detail": user.dict(),
+        "user_detail": user.model_dump(),
         "avatar": "",
     }
 

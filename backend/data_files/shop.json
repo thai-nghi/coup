@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "name": "Originum Chessboard",
+        "price": 200,
+        "description": "Chessboard with originum pattern",
+        "banner_pic": "",
+        "item_type": "CHESS_BOARD"
+    },
+    {
+        "id": 2,
+        "name": "Orirock Chessback",
+        "price": 20000,
+        "description": "Chessback decor with orirock",
+        "banner_pic": "",
+        "item_type": "CHESS_BACK"
+    }
+]

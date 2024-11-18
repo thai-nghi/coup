@@ -1,20 +1,13 @@
 from typing import Annotated
-from fastapi import Depends
 
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.dependencies.database import get_db
-from src.core.jwt import (
-    decode_access_token,
-    SUB,
-)
-
 from src import schemas
-
-
+from src.core.jwt import SUB, decode_access_token
+from src.dependencies.database import get_db
 from src.services import user as user_service
-
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

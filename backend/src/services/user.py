@@ -1,12 +1,7 @@
-from src import db_tables
-from src import schemas
-from src import exceptions
+from sqlalchemy import insert, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-)
-
-from sqlalchemy import select, insert
+from src import db_tables, exceptions, schemas
 
 
 async def user_exist_by_email(db_session: AsyncSession, email: str) -> bool:
@@ -25,11 +20,10 @@ async def create_user_by_email(
     user_tbl = db_tables.user
 
     query = insert(user_tbl).values(
-        full_name=user_data.full_name,
+        display_name=user_data.display_name,
         email=user_data.email,
         password=hashed_password,
-        city=user_data.city,
-        country=user_data.country,
+        country=user_data.country_id,
     )
 
     (await db_session.execute(query))
@@ -55,12 +49,10 @@ async def user_detail_by_email(
     query = select(
         user_tbl.c.id,
         user_tbl.c.email,
-        user_tbl.c.full_name,
-        user_tbl.c.points,
-        user_tbl.c.total_points,
-        user_tbl.c.city,
-        user_tbl.c.country,
-        user_tbl.c.rank,
+        user_tbl.c.display_name,
+        user_tbl.c.elo,
+        user_tbl.c.coins,
+        user_tbl.c.country.label("country_id"),
     ).where(user_tbl.c.email == email)
 
     user = (await db_session.execute(query)).first()
@@ -81,12 +73,10 @@ async def get_user_by_google_id(
         select(
             user_tbl.c.id,
             user_tbl.c.email,
-            user_tbl.c.full_name,
-            user_tbl.c.points,
-            user_tbl.c.total_points,
-            user_tbl.c.city,
-            user_tbl.c.country,
-            user_tbl.c.rank,
+            user_tbl.c.display_name,
+            user_tbl.c.elo,
+            user_tbl.c.coins,
+            user_tbl.c.country.label("country_id"),
         )
         .select_from(user_tbl.join(google_tbl, google_tbl.c.user_id == user_tbl.c.id))
         .where(google_tbl.c.google_id == google_id)
@@ -103,12 +93,10 @@ async def user_by_id(db_session: AsyncSession, id: int) -> schemas.UserResponse:
     query = select(
         user_tbl.c.id,
         user_tbl.c.email,
-        user_tbl.c.full_name,
-        user_tbl.c.points,
-        user_tbl.c.total_points,
-        user_tbl.c.city,
-        user_tbl.c.country,
-        user_tbl.c.rank,
+        user_tbl.c.display_name,
+        user_tbl.c.elo,
+        user_tbl.c.coins,
+        user_tbl.c.country.label("country_id"),
     ).where(user_tbl.c.id == id)
 
     user = (await db_session.execute(query)).first()
@@ -131,7 +119,7 @@ async def create_user_by_google_id(
         email=google_data.email,
         password=None,
         city="Lahti",
-        country="Finland",
+        country=10,
     )
 
     inserted_id = (await db_session.execute(query)).inserted_primary_key[0]

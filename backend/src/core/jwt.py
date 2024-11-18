@@ -1,15 +1,15 @@
-import uuid
 import sys
-from datetime import timedelta, datetime, timezone
+import uuid
+from datetime import datetime, timedelta, timezone
 
-from jose import jwt, JWTError
 from fastapi import Response
+from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from . import config
-from src.schemas import TokenPair, JwtTokenSchema, UserResponse
 from src.exceptions import AuthFailedException
+from src.schemas import JwtTokenSchema, TokenPair, UserResponse
 
+from . import config
 
 REFRESH_COOKIE_NAME = "refresh"
 SUB = "sub"
@@ -36,7 +36,9 @@ def _create_access_token(payload: dict, minutes: int | None = None) -> JwtTokenS
     payload[EXP] = expire
 
     token = JwtTokenSchema(
-        token=jwt.encode(payload, config.settings.SECRET_KEY, algorithm=config.settings.ALGORITHM),
+        token=jwt.encode(
+            payload, config.settings.SECRET_KEY, algorithm=config.settings.ALGORITHM
+        ),
         payload=payload,
         expire=expire,
     )
@@ -45,12 +47,16 @@ def _create_access_token(payload: dict, minutes: int | None = None) -> JwtTokenS
 
 
 def _create_refresh_token(payload: dict) -> JwtTokenSchema:
-    expire = _get_utc_now() + timedelta(minutes=config.settings.REFRESH_TOKEN_EXPIRES_MINUTES)
+    expire = _get_utc_now() + timedelta(
+        minutes=config.settings.REFRESH_TOKEN_EXPIRES_MINUTES
+    )
 
     payload[EXP] = expire
 
     token = JwtTokenSchema(
-        token=jwt.encode(payload, config.settings.SECRET_KEY, algorithm=config.settings.ALGORITHM),
+        token=jwt.encode(
+            payload, config.settings.SECRET_KEY, algorithm=config.settings.ALGORITHM
+        ),
         expire=expire,
         payload=payload,
     )
@@ -69,7 +75,9 @@ def create_token_pair(user: UserResponse) -> TokenPair:
 
 async def decode_access_token(token: str):
     try:
-        payload = jwt.decode(token, config.settings.SECRET_KEY, algorithms=[config.settings.ALGORITHM])
+        payload = jwt.decode(
+            token, config.settings.SECRET_KEY, algorithms=[config.settings.ALGORITHM]
+        )
     except JWTError:
         raise AuthFailedException()
 
@@ -78,7 +86,9 @@ async def decode_access_token(token: str):
 
 def refresh_token_state(token: str):
     try:
-        payload = jwt.decode(token, config.settings.SECRET_KEY, algorithms=[config.settings.ALGORITHM])
+        payload = jwt.decode(
+            token, config.settings.SECRET_KEY, algorithms=[config.settings.ALGORITHM]
+        )
     except JWTError as ex:
         print(str(ex))
         raise AuthFailedException()
@@ -87,7 +97,9 @@ def refresh_token_state(token: str):
 
 
 def add_refresh_token_cookie(response: Response, token: str):
-    exp = _get_utc_now() + timedelta(minutes=config.settings.REFRESH_TOKEN_EXPIRES_MINUTES)
+    exp = _get_utc_now() + timedelta(
+        minutes=config.settings.REFRESH_TOKEN_EXPIRES_MINUTES
+    )
     exp.replace(tzinfo=timezone.utc)
 
     response.set_cookie(

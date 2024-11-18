@@ -1,11 +1,7 @@
-from src import db_tables
-from src import schemas
+from sqlalchemy import insert, select, update
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-)
-
-from sqlalchemy import select, insert, update
+from src import db_tables, schemas
 from src.services import user
 
 

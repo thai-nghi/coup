@@ -1,7 +1,8 @@
-from typing import Any
-from datetime import datetime
-from pydantic import BaseModel, validator, EmailStr, root_validator
 import enum
+from datetime import datetime
+from typing import Any
+
+from pydantic import BaseModel, EmailStr, field_validator, model_validator
 
 
 class UserRank(enum.Enum):
@@ -11,6 +12,7 @@ class UserRank(enum.Enum):
     CHAMPION = 4
     LEGEND = 5
 
+
 class ItemType(enum.Enum):
     AVATAR_FRAME = 1
     CHESS_BOARD = 2
@@ -18,22 +20,38 @@ class ItemType(enum.Enum):
     WIN_ANIMATION = 4
     LOSE_ANIMATION = 5
 
+
+class CoinChangeEventType(enum.Enum):
+    MATCH = 1
+    SHOP = 2
+    PROMOTION = 3
+    ADMIN = 4
+
+
+class MatchResult(enum.Enum):
+    LOSE = 0
+    WIN = 1
+
+
+class MatchType(enum.Enum):
+    RANKED = 0
+    LOBBY = 1
+
+
 class UserBase(BaseModel):
     email: EmailStr
-    full_name: str
-    city: str
-    country: str
+    display_name: str
+    country_id: int
 
 
 class UserCreate(UserBase):
-    password: str | None
+    password: str | None = None
 
 
 class UserResponse(UserBase):
     id: int
-    points: int
-    rank: UserRank
-    total_points: int
+    elo: int
+    coins: int
 
 
 class GoogleCredentalData(BaseModel):
@@ -48,24 +66,26 @@ class UserRegister(UserBase):
     password: str
     confirm_password: str
 
-    @validator("confirm_password")
-    def verify_password_match(cls, v, values, **kwargs):
-        password = values.get("password")
+    @model_validator(mode="after")
+    def verify_password_match(self):
 
-        if v != password:
+        pw1 = self.password
+        pw2 = self.confirm_password
+
+        if pw1 is not None and pw2 is not None and pw1 != pw2:
             raise ValueError("The two passwords did not match.")
 
-        return v
+        return self
 
 
 class UserLogin(BaseModel):
-    email: EmailStr | None
-    password: str | None
-    google_token: str | None
-    
-    @root_validator
+    email: EmailStr | None = None
+    password: str | None = None
+    google_token: str | None = None
+
+    @model_validator(mode="before")
+    @classmethod
     def ensure_credentals(cls, values):
-        print(values)
         if "username" in values:
             values["email"] = values["username"]
         if "email" not in values and "google_token" not in values:
@@ -74,6 +94,7 @@ class UserLogin(BaseModel):
             raise ValueError("Password is required for login with email")
 
         return values
+
 
 class JwtTokenSchema(BaseModel):
     token: str
@@ -89,16 +110,49 @@ class TokenPair(BaseModel):
 class SuccessResponseScheme(BaseModel):
     msg: str
 
+
 class LeaderboardEntry(BaseModel):
     total_points: int
     full_name: str
     rank: UserRank
     id: int
 
+
 class ShopItem(BaseModel):
     id: int
     name: str
     description: str
     price: int
-    rank_to_unlock: UserRank
     banner_pic: str
+
+
+class PlayerResult(BaseModel):
+    player_id: int
+    elo_change: int
+    result: MatchResult
+    coin_change: int
+
+
+class MatchResultIn(BaseModel):
+    match_id: int
+    match_replay: str
+    move_first_player: int
+    player_result: list[PlayerResult]
+    type: MatchType
+
+
+class MatchHistoryEntry(PlayerResult):
+    match_id: int
+    match_time: datetime
+    type: MatchType
+
+
+class PlayerSummary(BaseModel):
+    player_id: int
+    display_name: str
+    elo: int
+
+
+class NewMatchData(BaseModel):
+    match_id: int
+    player_data: list[PlayerSummary]

@@ -1,3 +1,5 @@
+name: coup-prod
+
 services:
   postgres:
     extends:
