@@ -1,9 +1,4 @@
 import Landing from "@/components/landing";
-import { List, ListItem, Card, Progress } from "@/components/mt-wrapper/mt-wrapper";
-import { Button, Typography } from 'antd';
-
-const { Title } = Typography;
-
 export default function Home() {
   return (
     <>
