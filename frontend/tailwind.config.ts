@@ -14,6 +14,11 @@ module.exports = withMT({
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        'primary-bg':'#2A363B',
+        'primary-element':'#99B898',
+        'secondary-element':'#E84A5F',
+        'third-element':'#FF847C',
+        'fourth-element': '#FECEAB'
       },
     },
   },

@@ -5,9 +5,10 @@ const { Title } = Typography;
 export default function Landing() {
     return (
         <>
-            <div className="container h-full w-full bg-amber-500 flex flex-col space-y-4 justify-center">
+            <div className="container h-full w-full flex flex-col space-y-4 justify-center">
                 <Title className="self-center">Chess, but with a gacha twist</Title>
-                <div className="h-1/8 w-64 z-10 bg-green-300 rounded-md self-center content-center justify-center flex"><Title level={2}>Play Online</Title></div>
+                <div className="bg-secondary-element rounded-md self-center justify-center flex text-center p-3 px-12"><p className="bold text-3xl">Play Online</p></div>
+                <div className="bg-secondary-element rounded-md self-center justify-center flex text-center p-3 px-6"><p className="bold text-xl">Play with a friend</p></div>
             </div >
         </>
     )
