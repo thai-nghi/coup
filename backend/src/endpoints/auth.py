@@ -4,7 +4,6 @@ import httpx
 from fastapi import APIRouter, Depends, HTTPException, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from src import schemas
 from src.core.hash import get_password_hash, verify_password
 from src.core.jwt import add_refresh_token_cookie, create_token_pair
@@ -12,7 +11,7 @@ from src.dependencies.database import get_db
 from src.exceptions import BadRequestException
 from src.services import user as user_service
 
-router = APIRouter(prefix="/auth")
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/register")

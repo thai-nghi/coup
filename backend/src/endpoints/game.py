@@ -11,7 +11,9 @@ from src.exceptions import AuthFailedException, BadRequestException
 from src.schemas import response
 from src.services import game
 
-router = APIRouter(prefix="/game", dependencies=[Depends(get_current_user)])
+router = APIRouter(
+    prefix="/game", dependencies=[Depends(get_current_user)], tags=["game"]
+)
 
 
 @router.post("/play")
