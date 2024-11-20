@@ -1,18 +1,21 @@
+import Landing from "@/components/landing";
 import { List, ListItem, Card, Progress } from "@/components/mt-wrapper/mt-wrapper";
+import { Button, Typography } from 'antd';
 
+const { Title } = Typography;
 
 export default function Home() {
   return (
-    <div className="flex w-full flex-col gap-4">
-      <h1>Hello World!</h1>
-      <Card className="w-96">
-      <List>
-        <ListItem>Inbox</ListItem>
-        <ListItem>Trash</ListItem>
-        <ListItem>Settings</ListItem>
-      </List>
-    </Card>
-    <Progress value={50} color="blue"/>
-    </div>
+    <>
+      <div className="bg-fourth-element h-10 flex flex-row justify-between">
+        <div className="w-24 h-full px-5 "><p className="bold text-3xl text-third-element">Coup</p></div>
+        <div className="w-24 h-full bg-third-element flex text-center justify-center"><p className="bold text-2xl">Login</p></div>
+      </div>
+      <div className="relative flex h-screen content-center items-center justify-center pb-32 pt-8 bg-primary-bg">
+        <div className="container flex mx-auto bg-primary-element rounded-md h-full pb-32 pt-8 ">
+          <Landing></Landing>
+        </div>
+      </div>
+    </>
   );
 }
