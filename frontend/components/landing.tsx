@@ -1,5 +1,5 @@
 "use client";
-import { Button, Typography } from 'antd';
+import {Typography } from 'antd';
 
 const { Title } = Typography;
 export default function Landing() {
