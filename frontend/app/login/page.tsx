@@ -3,9 +3,9 @@
 import { Input, Checkbox, Button, Typography } from "@material-tailwind/react";
 import { useGoogleLogin } from "@react-oauth/google";
 import {
-    useSessionStorageState,
-    useRequest,
-    useLocalStorageState,
+  useSessionStorageState,
+  useRequest,
+  useLocalStorageState,
 } from "ahooks";
 import React from "react";
 // import { sendGoogleLogin } from "@/apis/user";
@@ -13,115 +13,142 @@ import registerImg from '@/assets/choi-co-up-12.jpg';
 
 import Image from 'next/image';
 import Link from "next/link";
+import { login } from "../apis/user";
+import { redirect } from "next/navigation";
 
 export default function Login() {
-    const [userData, setUserData] = useSessionStorageState("userData");
-    const [_, setUserToken] = useSessionStorageState("googleToken");
-    const [authToken, setAuthToken] = useLocalStorageState("token");
 
-    //   const { loading: loginLoading, run: loginRun } = useRequest(sendGoogleLogin, {
-    //     manual: true,
-    //     onSuccess: (result, params) => {
-    //       console.log(result);
-    //       if (!result.has_account) {
-    //         window.open("/register", "_self");
-    //       } else {
-    //         setUserData(result.data);
-    //         setAuthToken(result.token);
-    //         window.open("/profile", "_self");
-    //       }
-    //     },
-    //     onError: (error) => {},
-    //   });
 
-    if (userData) {
-        window.open("/profile", "_self");
-    }
 
-    //   const login = useGoogleLogin({
-    //     onSuccess: (tokenResponse) => {
-    //       setUserToken(tokenResponse.access_token);
-    //       loginRun(tokenResponse.access_token);
-    //     },
-    //   });
+  const [userData, setUserData] = useSessionStorageState("userData");
+  const [_, setUserToken] = useSessionStorageState("googleToken");
+  const [authToken, setAuthToken] = useLocalStorageState("token");
 
-    return (
-        <section className="flex h-screen gap-4 p-8 bg-primary-bg">
-            <div className="mt-24 w-full lg:w-3/5">
-                <div className="text-center">
-                    <Typography variant="h2" className="mb-4 font-bold text-white">
-                        Sign In
-                    </Typography>
-                    <Typography
-                        variant="paragraph"
-                        color="blue-gray"
-                        className="text-lg font-normal text-white"
-                    >
-                        Enter your email and password to Sign In.
-                    </Typography>
-                </div>
-                    <form className="mx-auto mb-2 mt-8 w-80 max-w-screen-lg lg:w-1/2">
 
-                        <div className="mb-1 flex flex-col gap-6">
-                            <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="-mb-3 font-medium text-white"
-                            >
-                                Your email
-                            </Typography>
-                            <Input
-                                size="lg"
-                                placeholder="name@mail.com"
-                                className=" !border-white focus:!border-white text-white dark:focus:!border-white"
-                                labelProps={{
-                                    className: "before:content-none after:content-none",
-                                }}
-                            />
-                            <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="-mb-3 font-medium text-white "
-                            >
-                                Password
-                            </Typography>
-                            <Input
-                                type="password"
-                                size="lg"
-                                placeholder="********"
-                                className=" !border-white focus:border-white dark:text-white dark:focus:!border-white"
-                                labelProps={{
-                                    className: "before:content-none after:content-none",
-                                }}
-                            />
-                        </div>
-                        <Checkbox
-                            label={
-                                <Typography
-                                    variant="small"
-                                    color="white"
-                                    className="flex items-center justify-start font-medium dark:text-slate-400"
-                                >
-                                    I agree the&nbsp;
-                                    <a
-                                        href="#"
-                                        className="font-normal text-white underline transition-colors hover:text-gray-900 dark:text-white"
-                                    >
-                                        Terms and Conditions
-                                    </a>
-                                </Typography>
-                            }
-                            containerProps={{ className: "-ml-2.5" }}
-                        />
-                        <Button
-                            className="mt-6 dark:bg-white dark:text-slate-900 dark:shadow-slate-900/50"
-                            fullWidth
-                        >
-                            Sign In
-                        </Button>
+  //   const { loading: loginLoading, run: loginRun } = useRequest(sendGoogleLogin, {
+  //     manual: true,
+  //     onSuccess: (result, params) => {
+  //       console.log(result);
+  //       if (!result.has_account) {
+  //         window.open("/register", "_self");
+  //       } else {
+  //         setUserData(result.data);
+  //         setAuthToken(result.token);
+  //         window.open("/profile", "_self");
+  //       }
+  //     },
+  //     onError: (error) => {},
+  //   });
 
-                        <div className="mt-6 flex items-center justify-between gap-2">
-                            {/* <Checkbox
+  if (userData) {
+    redirect("/");
+  }
+
+  //   const login = useGoogleLogin({
+  //     onSuccess: (tokenResponse) => {
+  //       setUserToken(tokenResponse.access_token);
+  //       loginRun(tokenResponse.access_token);
+  //     },
+  //   });
+
+
+  const { run: runLogin } = useRequest(login, {
+    manual: true,
+    onSuccess: (result, params) => {
+      console.log(result);
+      setAuthToken(result.token);
+      setUserData(result.user_detail);
+      //router.push("/");
+    },
+  });
+
+  const submitForm = (formData: FormData) => {
+    runLogin({
+      email: formData.get("email"),
+      password: formData.get("password")
+    });
+  }
+
+  return (
+    <section className="flex h-screen gap-4 p-8 bg-primary-bg">
+      <div className="mt-24 w-full lg:w-3/5">
+        <div className="text-center">
+          <Typography variant="h2" className="mb-4 font-bold text-white">
+            Sign In
+          </Typography>
+          <Typography
+            variant="paragraph"
+            color="blue-gray"
+            className="text-lg font-normal text-white"
+          >
+            Enter your email and password to Sign In.
+          </Typography>
+        </div>
+        <form className="mx-auto mb-2 mt-8 w-80 max-w-screen-lg lg:w-1/2" action={submitForm}>
+
+          <div className="mb-1 flex flex-col gap-6">
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="-mb-3 font-medium text-white"
+            >
+              Your email
+            </Typography>
+            <Input
+              size="lg"
+              placeholder="name@mail.com"
+              className=" !border-white focus:!border-white text-white dark:focus:!border-white"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+              name="email"
+            />
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="-mb-3 font-medium text-white "
+            >
+              Password
+            </Typography>
+            <Input
+              type="password"
+              size="lg"
+              placeholder="********"
+              className=" !border-white focus:border-white dark:text-white dark:focus:!border-white"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+              name="password"
+            />
+          </div>
+          <Checkbox
+            label={
+              <Typography
+                variant="small"
+                color="white"
+                className="flex items-center justify-start font-medium dark:text-slate-400"
+              >
+                I agree the&nbsp;
+                <a
+                  href="#"
+                  className="font-normal text-white underline transition-colors hover:text-gray-900 dark:text-white"
+                >
+                  Terms and Conditions
+                </a>
+              </Typography>
+            }
+            containerProps={{ className: "-ml-2.5" }}
+          />
+          <Button
+            className="mt-6 dark:bg-white dark:text-slate-900 dark:shadow-slate-900/50 bg-primary-element"
+            fullWidth
+            type="submit"
+          >
+            Sign In
+          </Button>
+
+          <div className="mt-6 flex items-center justify-between gap-2">
+            {/* <Checkbox
               label={
                 <Typography
                   variant="small"
@@ -133,14 +160,14 @@ export default function Login() {
               }
               containerProps={{ className: "-ml-2.5" }}
             /> */}
-                            <Typography variant="small" className="font-medium text-white">
-                                <Link href="/register">No account? Register now!</Link>
-                            </Typography>
-                            <Typography variant="small" className="font-medium text-white">
-                                <a href="#">Forgot Password</a>
-                            </Typography>
-                        </div>
-                        {/* <div className="mt-8 space-y-4">
+            <Typography variant="small" className="font-medium text-white">
+              <Link href="/register">No account? Register now!</Link>
+            </Typography>
+            <Typography variant="small" className="font-medium text-white">
+              <a href="#">Forgot Password</a>
+            </Typography>
+          </div>
+          {/* <div className="mt-8 space-y-4">
             <Button
               size="lg"
               color="white"
@@ -186,13 +213,13 @@ export default function Login() {
               <span>Sign in With Google</span>
             </Button>
           </div> */}
-                    </form>
-            </div>
-            <div className="fixed right-0 top-0 hidden h-screen w-2/5 text-center content-center lg:block">
-                <Image src={registerImg} alt="">
+        </form>
+      </div>
+      <div className="fixed right-0 top-0 hidden h-screen w-2/5 text-center content-center lg:block px-5">
+        <Image src={registerImg} alt="">
 
-                </Image>
-            </div>
-        </section>
-    );
+        </Image>
+      </div>
+    </section>
+  );
 }

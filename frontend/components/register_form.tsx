@@ -10,7 +10,10 @@ import { registerUser } from '@/app/apis/user';
 
 import {
     useRequest,
+    useSessionStorageState,
+    useLocalStorageState
 } from "ahooks";
+import { useRouter } from 'next/navigation';
 
 type FieldType = {
     email?: string;
@@ -43,11 +46,18 @@ interface RegisterFormProps {
 export default function RegisterForm({ countries }: RegisterFormProps) {
     const [form] = Form.useForm();
 
+    const [_, setToken] = useLocalStorageState('token');
+    const [userData, setUserData] = useSessionStorageState("userData");
+
+    const router = useRouter();
+
     const { run: runRegisterUser } = useRequest(registerUser, {
         manual: true,
         onSuccess: (result, params) => {
-            console.log(result)
-            //window.open("/profile", "_self");
+            console.log(result);
+            setToken(result.token)
+            setUserData(result.user_detail)
+            router.push("/");
         },
     });
     

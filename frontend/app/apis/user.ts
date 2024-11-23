@@ -21,6 +21,17 @@ export async function getUserInfo(token: string) {
     return data?.data;
 }
 
+export async function login(props: Record<string, any>) {
+    let data = await send_request({
+        method: "POST",
+        url: `/auth/login`,
+        body: {
+            ...props
+        },
+    });
+    return data;
+}
+
 export async function sendGoogleLogin(token: string) {
     try {
         return await send_request({
