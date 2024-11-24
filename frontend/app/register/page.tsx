@@ -3,7 +3,7 @@ import { send_request } from '../apis/util';
 
 export default async function Register() {
 
-    let countries = await send_request({ method: "POST", url: "/metadata/", body: ["COUNTRY"] })
+    const countries = await send_request({ method: "POST", url: "/metadata/", body: ["COUNTRY"] })
     return (
         <RegisterForm countries={countries?.COUNTRY}></RegisterForm>
     )
