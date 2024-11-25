@@ -38,6 +38,15 @@ class MatchType(enum.Enum):
     LOBBY = 1
 
 
+class MetadataFields(str, enum.Enum):
+    COUNTRY = "COUNTRY"
+
+
+class Country(BaseModel):
+    label: str
+    value: int
+
+
 class UserBase(BaseModel):
     email: EmailStr
     display_name: str

@@ -4,6 +4,7 @@ from fastapi.responses import ORJSONResponse
 from src.endpoints.admin import router as admin_router
 from src.endpoints.auth import router as auth_router
 from src.endpoints.game import router as game_router
+from src.endpoints.metadata import router as metadata_router
 from src.endpoints.shop import router as shop_router
 from src.endpoints.user import router as user_router
 from src.endpoints.webhook import router as webhook_router
@@ -27,5 +28,6 @@ for router in (
     game_router,
     admin_router,
     webhook_router,
+    metadata_router,
 ):
     app.include_router(router)
