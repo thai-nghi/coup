@@ -1,5 +1,5 @@
 import RegisterForm from '@/components/register_form';
-import { send_request } from '../apis/util';
+import { send_request } from '../../apis/util';
 
 export default async function Register() {
 

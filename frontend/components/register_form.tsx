@@ -6,7 +6,7 @@ import type { FormProps } from 'antd';
 
 import registerImg from '@/assets/choi-co-up-12.jpg';
 
-import { registerUser } from '@/app/apis/user';
+import { registerUser } from '@/apis/user';
 
 import {
     useRequest,

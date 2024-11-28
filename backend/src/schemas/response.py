@@ -14,3 +14,7 @@ class MatchHistorySummary(BaseModel):
     win: int
     loss: int
     total_match: int
+
+
+class ShopResponse(BaseModel):
+    categories: list[schemas.ItemCategory]

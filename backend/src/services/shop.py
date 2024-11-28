@@ -1,20 +1,31 @@
+from collections import defaultdict
+
 from sqlalchemy import insert, select, update
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from src import db_tables, exceptions, schemas
+from src.schemas import response
 from src.services import user
 
 
-async def all_items(db_session: AsyncSession) -> list[schemas.ShopItem]:
+async def all_items(db_session: AsyncSession) -> response.ShopResponse:
     query = select(db_tables.shop_item)
 
     items = await db_session.execute(query)
 
-    return [schemas.ShopItem(**item._mapping) for item in items]
+    items = [schemas.ShopItem(**item._mapping) for item in items]
+
+    categories = defaultdict(list)
+
+    for item in items:
+        categories[item.type.value.capitalize()].append(item)
+
+    return response.ShopResponse(categories=categories)
 
 
-async def buy_item(db_session: AsyncSession, user_id: int, item_id: int, price: int):
+async def buy_item(
+    db_session: AsyncSession, user_id: int, item_id: int, price: int
+) -> int:
 
     inventory_tbl = db_tables.user_inventory
     user_tbl = db_tables.user
@@ -36,9 +47,9 @@ async def buy_item(db_session: AsyncSession, user_id: int, item_id: int, price: 
         .values(coins=user_tbl.c.coins - price)
     )
 
-    new_point = (await db_session.execute(query)).scalar()
+    new_coins = (await db_session.execute(query)).scalar()
 
-    return new_point
+    return new_coins
 
 
 async def item_detail(db_session: AsyncSession, item_id: int) -> schemas.ShopItem:

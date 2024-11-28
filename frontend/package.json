@@ -10,14 +10,22 @@
   },
   "dependencies": {
     "@ant-design/nextjs-registry": "^1.0.2",
+    "@fortawesome/fontawesome-svg-core": "^6.7.1",
+    "@fortawesome/free-brands-svg-icons": "^6.7.1",
+    "@fortawesome/free-regular-svg-icons": "^6.7.1",
+    "@fortawesome/free-solid-svg-icons": "^6.7.1",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@material-tailwind/html": "^2.3.2",
     "@material-tailwind/react": "^2.1.10",
     "@react-oauth/google": "^0.12.1",
     "ahooks": "^3.8.1",
     "antd": "^5.22.1",
+    "konva": "^9.3.16",
     "next": "14.2.14",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-konva": "^18.2.10",
+    "sass": "^1.81.0",
     "sharp": "^0.33.5"
   },
   "devDependencies": {

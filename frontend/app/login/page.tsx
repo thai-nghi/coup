@@ -13,8 +13,8 @@ import registerImg from '@/assets/choi-co-up-12.jpg';
 
 import Image from 'next/image';
 import Link from "next/link";
-import { login } from "../apis/user";
 import { redirect } from "next/navigation";
+import { login } from "@/apis/user";
 
 export default function Login() {
 

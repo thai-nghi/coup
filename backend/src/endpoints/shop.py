@@ -6,6 +6,7 @@ from src import schemas
 from src.dependencies.database import get_db
 from src.dependencies.user import get_current_user
 from src.exceptions import BadRequestException
+from src.schemas import response
 from src.services import shop as shop_service
 
 router = APIRouter(
@@ -13,13 +14,11 @@ router = APIRouter(
 )
 
 
-@router.get("/")
+@router.get("/", response_model=response.ShopResponse)
 async def shop_items(
     db_session: AsyncSession = Depends(get_db),
 ):
-    items = await shop_service.all_items(db_session)
-
-    return {"items": items}
+    return await shop_service.all_items(db_session)
 
 
 @router.post("/{item_id}")
