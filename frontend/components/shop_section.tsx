@@ -29,6 +29,7 @@ export default function ShopSection({ name, items, clickBuyFn }: ShopSectionProp
                         <List
                             grid={{ gutter: 16, column: 3 }}
                             dataSource={items}
+                            rowKey={(item) => item.id}
                             renderItem={(item) => (
                                 <List.Item>
                                     <Card

@@ -126,7 +126,7 @@ export default function Shop() {
 
                     <>
                         {shopDataMock.map((category) =>
-                            <ShopSection name={category.name} items={category.items} clickBuyFn={clickByFunction}></ShopSection>
+                            <ShopSection name={category.name} items={category.items} clickBuyFn={clickByFunction} key={category.name}></ShopSection>
                         )}
                     </>
 
