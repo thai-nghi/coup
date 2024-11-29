@@ -31,7 +31,7 @@ export default function ShopSection({ name, items, clickBuyFn }: ShopSectionProp
                             dataSource={items}
                             rowKey={(item) => item.id}
                             renderItem={(item) => (
-                                <List.Item>
+                                <List.Item key={item.id}>
                                     <Card
                                     style={{ width: 300, minWidth: 300 }}
                                     cover={
