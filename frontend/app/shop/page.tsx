@@ -105,7 +105,7 @@ export default function Shop() {
         onSuccess: (data, params) => {
             setShopData(data);
         },
-        defaultParams: [authToken],
+        defaultParams: [authToken!!]  ,
         ready: Boolean(authToken)
     })
 
