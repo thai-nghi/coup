@@ -10,11 +10,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCrown, faCoins } from '@fortawesome/free-solid-svg-icons'
 
 import { Typography } from 'antd';
+import { UserData } from "@/types";
 
 const { Title } = Typography;
 
 export default function Header() {
-    const [userData, setUserData] = useSessionStorageState("userData");
+    const [userData, setUserData] = useSessionStorageState<UserData>("userData");
 
     const [open, setOpen] = useState(false);
 
