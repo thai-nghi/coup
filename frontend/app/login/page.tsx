@@ -15,14 +15,15 @@ import Image from 'next/image';
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { login } from "@/apis/user";
+import { UserData } from "@/types";
 
 export default function Login() {
 
 
 
-  const [userData, setUserData] = useSessionStorageState("userData");
+  const [userData, setUserData] = useSessionStorageState<UserData>("userData");
   const [_, setUserToken] = useSessionStorageState("googleToken");
-  const [authToken, setAuthToken] = useLocalStorageState("token");
+  const [authToken, setAuthToken] = useLocalStorageState<string>("token");
 
 
   //   const { loading: loginLoading, run: loginRun } = useRequest(sendGoogleLogin, {

@@ -9,7 +9,7 @@ import ShopSection from "@/components/shop_section";
 import "./index.scss"
 import { useLocalStorageState, useRequest, useSessionStorageState } from "ahooks";
 import { useState } from "react";
-import { ShopSectionType } from "@/types";
+import { ShopSectionType, UserData } from "@/types";
 import { buyItem, itemList } from "@/apis/shop";
 
 
@@ -85,8 +85,8 @@ const shopDataMock = [
 
 export default function Shop() {
 
-    const [userData, setUserData] = useSessionStorageState("userData");
-    const [authToken, setAuthToken] = useLocalStorageState("token");
+    const [userData, setUserData] = useSessionStorageState<UserData>("userData");
+    const [authToken, setAuthToken] = useLocalStorageState<string>("token");
 
     const [shopData, setShopData] = useState<ShopSectionType[]>();
 
@@ -94,9 +94,10 @@ export default function Shop() {
         manual: true,
         onSuccess: (result, params) => {
             console.log(result);
-            userData.coins = result;
-            setUserData(userData);
-
+            if (userData) {
+                userData.coins = result;
+                setUserData(userData);
+            }
         },
     });
 
@@ -104,10 +105,11 @@ export default function Shop() {
         onSuccess: (data, params) => {
             setShopData(data);
         },
-        defaultParams: [authToken]
+        defaultParams: [authToken],
+        ready: Boolean(authToken)
     })
 
-    const clickByFunction = function(itemId: number){
+    const clickByFunction = function (itemId: number) {
         //runBuyItem(authToken, itemId);
         console.log("Buy item " + itemId);
     }

@@ -16,3 +16,11 @@ export interface ShopSectionType {
     name: string;
     items: ShopItem[];
 }
+
+export interface UserData {
+    email: string;
+    display_name: string;
+    id: number;
+    elo: number;
+    coins: number;
+}
