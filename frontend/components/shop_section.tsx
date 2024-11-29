@@ -31,7 +31,7 @@ export default function ShopSection({ name, items, clickBuyFn }: ShopSectionProp
                             dataSource={items}
                             rowKey={(item) => item.id}
                             renderItem={(item) => (
-                                <List.Item key={item.id}>
+                                <List.Item>
                                     <Card
                                     style={{ width: 300, minWidth: 300 }}
                                     cover={
@@ -41,7 +41,7 @@ export default function ShopSection({ name, items, clickBuyFn }: ShopSectionProp
                                         />
                                     }
                                     actions={[
-                                        <Button type="primary" onClick={() => clickBuyFn(item.id)}><FontAwesomeIcon icon={faCoins} size="2x" />{item.price}</Button>
+                                        <Button type="primary" onClick={() => clickBuyFn(item.id)} key={1}><FontAwesomeIcon icon={faCoins} size="2x" />{item.price}</Button>
                                     ]}
                                 >
                                     <Title level={3}>{item.name}</Title>
