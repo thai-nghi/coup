@@ -133,6 +133,7 @@ class ShopItem(BaseModel):
     description: str
     price: int
     banner_pic: str
+    type: ItemType
 
 
 class PlayerResult(BaseModel):
@@ -165,3 +166,8 @@ class PlayerSummary(BaseModel):
 class NewMatchData(BaseModel):
     match_id: int
     player_data: list[PlayerSummary]
+
+
+class ItemCategory(BaseModel):
+    name: str
+    items: list[ShopItem]
