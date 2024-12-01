@@ -69,13 +69,13 @@ export default function HomePage() {
                     <>
                         <div className="relative flex flex-col h-screen items-center gap-5 pb-16 pt-8 bg-primary-bg w-full">
                             <div className="container flex flex-col items-center justify-center h-2/5 gap-3 w-full">
-                                <Link href="/login" className="flex self-center w-1/3">
+                                <Link href="/game" className="flex self-center w-1/3">
                                     <div className="bg-primary-element rounded-md justify-center flex text-center p-3 px-12 w-full gap-5">
                                         <FontAwesomeIcon icon={faNetworkWired} size="2x" />
                                         <p className="bold text-3xl">Play Online</p>
                                     </div>
                                 </Link>
-                                <Link href="/login" className="flex self-center w-1/3">
+                                <Link href="/game" className="flex self-center w-1/3">
                                     <div className="bg-primary-element rounded-md justify-center flex text-center p-3 px-12 w-full gap-5">
                                     <FontAwesomeIcon icon={faHandshake} size="2x" />
                                         <p className="bold text-3xl">Play With Friend</p>
