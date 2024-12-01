@@ -6,13 +6,13 @@ import Image from 'next/image';
 import { Typography } from 'antd';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown, faClock, faBriefcaseClock } from '@fortawesome/free-solid-svg-icons'
+import { useState } from "react";
+import { useInterval } from "ahooks";
 
 const { Title } = Typography;
 
 
 interface MatchPlayerData {
-    roundTime: number;
-    matchTime: number;
     displayName: string;
     avatar: string;
     elo: number;
@@ -25,7 +25,16 @@ function secondsTo2DigitTime(seconds: number) {
     return `${min < 10 ? '0' + min : min}:${sec < 10 ? '0' + sec : sec}`
 }
 
-export default function MatchProfile({ roundTime, matchTime, displayName, avatar, elo }: MatchPlayerData) {
+export default function MatchProfile({ displayName, avatar, elo }: MatchPlayerData) {
+    
+    const [roundTime, setRoundTime] = useState<number>(60);
+
+    useInterval(() => {
+        if (roundTime >= 0) {
+            setRoundTime(roundTime - 1);
+        }
+    }, 1000);
+    
     return (
         <>
             <ConfigProvider
@@ -53,7 +62,7 @@ export default function MatchProfile({ roundTime, matchTime, displayName, avatar
                             </div>
                             <div className="flex items-center gap-5">
                                 <div className="w-1/4"><FontAwesomeIcon icon={faBriefcaseClock} size="2x" /></div>
-                                <p className="text-2xl">{secondsTo2DigitTime(matchTime)}</p>
+                                <p className="text-2xl">{secondsTo2DigitTime(60*12)}</p>
                             </div>
                         </div>
                     </div>

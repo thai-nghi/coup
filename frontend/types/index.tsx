@@ -73,6 +73,14 @@ export interface GameProps {
     board: BoardCell[][],
     containerRef: MutableRefObject<null>,
     setSelectedCellFunc: SetSelectCellFunc,
-    movePieceFunc: MovePieceFunc
+    movePieceFunc: MovePieceFunc,
+    flipped: boolean
 }
+
+export enum ReadyState {
+    Connecting = 0,
+    Open = 1,
+    Closing = 2,
+    Closed = 3,
+  }
 
