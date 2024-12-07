@@ -3,7 +3,7 @@
 import GameBoard from "@/components/game_board";
 import Header from "@/components/header";
 import MatchProfile from "@/components/match_profile";
-import { BoardCell, CellAddr, GameState, PieceColor, PieceFace, PieceType, ReadyState, UserData } from "@/types";
+import { BoardCell, CellAddr, GameResult, GameState, PieceColor, PieceFace, PieceType, ReadyState, UserData } from "@/types";
 
 import { useInterval, useSessionStorageState, useUnmount, useWebSocket } from 'ahooks';
 import { Button, ConfigProvider, Modal, Typography } from "antd";
@@ -46,7 +46,7 @@ export default function GamePage() {
     const [isOwnTurn, setOwnTurn] = useState(false);
     const [gameState, setGameState] = useState(GameState.Init);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [gameResult, setGameResult] = useState();
+    const [gameResult, setGameResult] = useState<GameResult>();
 
     const showModal = () => {
         setIsModalOpen(true);

@@ -96,3 +96,10 @@ export enum ReadyState {
  export const EMPTY_CELL: BoardCell = {
     chessPiece: undefined
 }
+
+
+export interface GameResult {
+    elo_change: number,
+    coin_change: number,
+    result: number
+}
