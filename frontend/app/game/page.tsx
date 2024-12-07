@@ -62,7 +62,7 @@ export default function GamePage() {
         }
         if (gameState == GameState.EndGame){
             connect();
-            setGameResult({});
+            setGameResult({elo_change: data.elo_change, coin_change: data.coin_change, result: data.result});
             setGameState(GameState.Init);
         }
     };
