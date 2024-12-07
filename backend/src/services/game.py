@@ -11,6 +11,7 @@ live_matches = OrderedDict()
 async def record_match_result(
     db_session: AsyncSession, match_data: schemas.MatchResultIn
 ):
+    print(f"Result match record: {live_matches.keys()}")
     live_matches.pop(match_data.match_id)
 
     match_tbl = db_tables.matches
@@ -156,6 +157,8 @@ async def record_live_match(
     match_data: schemas.NewMatchData,
 ):
     live_matches[match_data.match_id] = match_data
+
+    print(f"Live match record: {live_matches.keys()}")
 
 
 async def live_match_list(

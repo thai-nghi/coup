@@ -43,3 +43,11 @@ export async function sendGoogleLogin(token: string) {
         }
     })
 }
+
+export async function matchHistorySummary(token: string){
+    return await send_request({
+        method: "GET",
+        url: '/game/history_summary',
+        token
+    })
+}

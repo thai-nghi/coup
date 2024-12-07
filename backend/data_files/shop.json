@@ -14,5 +14,13 @@
         "description": "Chessback decor with orirock",
         "banner_pic": "",
         "item_type": "CHESS_BACK"
+    },
+    {
+        "id": 3,
+        "name": "Sarkaz Chessback",
+        "price": 20000,
+        "description": "Chessback with elements from Sarkaz",
+        "banner_pic": "",
+        "item_type": "CHESS_BACK"
     }
 ]

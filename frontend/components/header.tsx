@@ -1,8 +1,8 @@
 "use client";
-import { useSessionStorageState } from "ahooks";
+import { useSessionStorageState, useRequest, useLocalStorageState } from "ahooks";
 import { Avatar, ConfigProvider, Drawer } from "antd";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import avatarImg from "@/assets/avatar.png"
 import Image from 'next/image';
 
@@ -11,11 +11,14 @@ import { faCrown, faCoins } from '@fortawesome/free-solid-svg-icons'
 
 import { Typography } from 'antd';
 import { UserData } from "@/types";
+import { matchHistorySummary } from "@/apis/user";
 
 const { Title } = Typography;
 
 export default function Header() {
     const [userData, setUserData] = useSessionStorageState<UserData>("userData");
+    const [historySummary, setHistorySummary] = useState();
+    const [authToken, setAuthToken] = useLocalStorageState<string>("token");
 
     const [open, setOpen] = useState(false);
 
@@ -26,6 +29,14 @@ export default function Header() {
     const onClose = () => {
         setOpen(false);
     };
+
+    useRequest(matchHistorySummary, {
+        onSuccess: (data, params) => {
+            setHistorySummary(data);
+        },
+        defaultParams: [authToken!!]  ,
+        ready: Boolean(authToken)
+    })
 
     return (
         <>
@@ -72,6 +83,12 @@ export default function Header() {
                                 <p className="text-2xl">{userData?.coins}</p>
                             </div>
                         </div>
+                    </div>
+                    <div className="flex gap-5 justify-center align-middle">
+                        <p className="flex text-2xl">WINS: {historySummary?.win}</p>
+                        <p className="flex text-2xl">LOSSES: {historySummary?.loss}</p>
+                        {/* <Title className="flex" level={3} ></Title> 
+                        <Title className="flex" level={3} >LOSSES: {historySummary?.loss}</Title> */}
                     </div>
 
                 </Drawer>

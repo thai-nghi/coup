@@ -144,7 +144,7 @@ class PlayerResult(BaseModel):
 
 
 class MatchResultIn(BaseModel):
-    match_id: int
+    match_id: str
     match_replay: str
     move_first_player: int
     player_result: list[PlayerResult]
@@ -164,7 +164,7 @@ class PlayerSummary(BaseModel):
 
 
 class NewMatchData(BaseModel):
-    match_id: int
+    match_id: str
     player_data: list[PlayerSummary]
 
 

@@ -20,13 +20,15 @@
     "@react-oauth/google": "^0.12.1",
     "ahooks": "^3.8.1",
     "antd": "^5.22.1",
+    "canvas": "^2.11.2",
     "konva": "^9.3.16",
     "next": "14.2.14",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-konva": "^18.2.10",
     "sass": "^1.81.0",
-    "sharp": "^0.33.5"
+    "sharp": "^0.33.5",
+    "use-image": "^1.1.1"
   },
   "devDependencies": {
     "@types/node": "^20",
