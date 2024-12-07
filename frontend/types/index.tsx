@@ -74,7 +74,8 @@ export interface GameProps {
     containerRef: MutableRefObject<null>,
     setSelectedCellFunc: SetSelectCellFunc,
     movePieceFunc: MovePieceFunc,
-    flipped: boolean
+    flipped: boolean,
+    isTurn: boolean,
 }
 
 export enum ReadyState {
@@ -84,3 +85,14 @@ export enum ReadyState {
     Closed = 3,
   }
 
+  export enum GameState {
+    Init = 0,
+    Finding = 1,
+    WaitReady = 2,
+    InGame = 3,
+    EndGame = 4
+  }
+
+ export const EMPTY_CELL: BoardCell = {
+    chessPiece: undefined
+}

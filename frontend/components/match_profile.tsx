@@ -29,11 +29,11 @@ export default function MatchProfile({ displayName, avatar, elo }: MatchPlayerDa
     
     const [roundTime, setRoundTime] = useState<number>(60);
 
-    useInterval(() => {
-        if (roundTime >= 0) {
-            setRoundTime(roundTime - 1);
-        }
-    }, 1000);
+    // useInterval(() => {
+    //     if (roundTime >= 0) {
+    //         setRoundTime(roundTime - 1);
+    //     }
+    // }, 1000);
     
     return (
         <>

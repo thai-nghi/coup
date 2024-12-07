@@ -4,11 +4,11 @@ import { ChessPiece, GameProps, PieceColor, PieceType, PieceFace } from "@/types
 import { Layer, Stage, Image, Circle } from "react-konva";
 import useImage from "use-image";
 import { useInterval, useSize } from 'ahooks';
-import { useRef, useState } from "react";
-import { BOARD_COLUMNS, BOARD_ROWS, centerCoord, indexToXCoord, indexToYCoord } from "@/game_logic";
+import { useEffect, useRef, useState } from "react";
+import { BOARD_COLUMNS, BOARD_ROWS, centerCoord, colToCoord, computePossibleMove, computeSafeMove, indexToXCoord, indexToYCoord, isKingUnderAttack, rowToCoord } from "@/game_logic";
 
 
-export default function GameBoard({ board, containerRef, setSelectedCellFunc, movePieceFunc, flipped }: GameProps) {
+export default function GameBoard({ board, containerRef, setSelectedCellFunc, movePieceFunc, flipped, isTurn }: GameProps) {
     const pieceImages = {
         [PieceColor.BLACK]: {},
         [PieceColor.WHITE]: {}
@@ -26,7 +26,8 @@ export default function GameBoard({ board, containerRef, setSelectedCellFunc, mo
     const size = useSize(containerRef);
     const [boardBg] = useImage("/chess/board_bg.svg");
     const [boardFace] = useImage("/chess/board_face.svg");
-    const [highlightCell, setHighLightCell] = useState<number[]>([]);
+    const [highlightCell, setHighLightCell] = useState([]);
+    const [isUnderAttack, setUnderAttack] = useState(false);
 
     const backgroundRef = useRef(null)
 
@@ -34,26 +35,40 @@ export default function GameBoard({ board, containerRef, setSelectedCellFunc, mo
     const realBoardY = size ? size.height * 0.07 : 0;
 
     const highlightPossibleMove = (piece: ChessPiece, index: number) => {
-        const currX = Math.floor(index % 10);
-        const currY = Math.floor(index / 10);
 
-        console.log(currX, currY);
-
-        const cells = []
-
-        for (let i = 1; (currX+i) < BOARD_COLUMNS; i++) {
-            cells.push(currY * BOARD_ROWS + (currX + i));
+        if (!isTurn){
+            setHighLightCell([]);
+            return
         }
+
+        //flipped => user color is black
+        if ((flipped && piece.color != PieceColor.BLACK) || (!flipped && piece.color != PieceColor.WHITE)){
+            setHighLightCell([]);
+            return
+        }
+
+        const col = Math.floor(index % BOARD_COLUMNS);
+        const row = Math.floor(index / BOARD_COLUMNS);
+
+        const cells = computeSafeMove(piece, index, board);
+
+        console.log(cells);
+        console.log(board);
 
         setHighLightCell(cells);
 
-        setSelectedCellFunc({row: currY, col: currX});
+        setSelectedCellFunc({row: row, col: col});
     }
 
-    const movePiece = (index: number) => {
+    const movePiece = (row: number, col: number) => {
         setHighLightCell([]);
-        movePieceFunc({row: Math.floor(index / 10), col: Math.floor(index % 10)})
+        movePieceFunc({row: row, col: col})
     }
+
+    useEffect(() => {
+        setUnderAttack(isKingUnderAttack(flipped? PieceColor.BLACK : PieceColor.WHITE ,board));
+    },
+        [board]);
 
     return (
         <Stage width={size?.width} height={size?.height}>
@@ -74,6 +89,7 @@ export default function GameBoard({ board, containerRef, setSelectedCellFunc, mo
                                     x={centerCoord(realBoardX + indexToXCoord(cellIndex, flipped), 65)}
                                     y={centerCoord(realBoardY + indexToYCoord(cellIndex, flipped), 65)}
                                     onClick={() => { highlightPossibleMove(cell.chessPiece, cellIndex) }}
+                                    shadowColor="#fc9790"
                                 >
                                 </Image>
                             }
@@ -85,16 +101,16 @@ export default function GameBoard({ board, containerRef, setSelectedCellFunc, mo
             </Layer>
             <Layer>
                 <>
-                    {highlightCell.map((index) => 
+                    {highlightCell.map(({row, col}) => 
                         <Circle 
-                        x={realBoardX + indexToXCoord(index)} 
-                        y={realBoardY + indexToYCoord(index)} 
+                        x={realBoardX + colToCoord(col, flipped)} 
+                        y={realBoardY + rowToCoord(row, flipped)} 
                         radius={10} 
                         fill="#fc9790"
                         shadowBlur={10} 
                         shadowColor="#fc9790"   
-                        onClick={() => movePiece(index)}    
-                        key={index}
+                        onClick={() => movePiece(row, col)}    
+                        key={row*BOARD_COLUMNS + col}
                         />
                     )
 

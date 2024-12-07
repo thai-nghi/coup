@@ -29,9 +29,10 @@ class PieceFace(str, enum.Enum):
 
 class MessageId(str, enum.Enum):
     FIND_MATCH = "FIND_MATCH"
-    CANCEL = ""
+    CANCEL = "CANCEL"
     MOVE = "MOVE"
     RESIGN = "RESIGN"
+    READY = "READY"
 
 
 class ChessPiece(pydantic.BaseModel):
@@ -51,6 +52,8 @@ class MatchmakingEntry(pydantic.BaseModel):
     )
     connection: WebSocketServerProtocol
     player_id: int
+    elo: int
+    display_name: str
 
 
 class Player(MatchmakingEntry):
@@ -59,6 +62,8 @@ class Player(MatchmakingEntry):
     side: PieceColor
     turn_time: int
     match_time: int
+    ready: bool = False
+    elo: int
 
 
 class Game(pydantic.BaseModel):
@@ -66,6 +71,11 @@ class Game(pydantic.BaseModel):
     chess_board: list[list[BoardCell]]
     players: dict[int, Player]
     current_turn_id: int
+    players_ready: int = 0
+    opponent_id: dict[int, int]
+    match_type: schemas.MatchType
+    move_first_player: int
+    game_end: bool = False
 
 
 class CellAddr(pydantic.BaseModel):
@@ -76,6 +86,8 @@ class CellAddr(pydantic.BaseModel):
 class FindMatchMessage(pydantic.BaseModel):
     message_id: Literal[MessageId.FIND_MATCH]
     player_id: int
+    elo: int
+    display_name: str
 
 
 class MoveMessage(pydantic.BaseModel):
@@ -84,13 +96,41 @@ class MoveMessage(pydantic.BaseModel):
     dest_addr: CellAddr
 
 
+class ReadyMessage(pydantic.BaseModel):
+    message_id: Literal[MessageId.READY]
+
+
+class CancelMessage(pydantic.BaseModel):
+    message_id: Literal[MessageId.CANCEL]
+
+
 Message = Annotated[
-    Union[FindMatchMessage, MoveMessage], pydantic.Field(discriminator="message_id")
+    Union[FindMatchMessage, MoveMessage, ReadyMessage, CancelMessage],
+    pydantic.Field(discriminator="message_id"),
 ]
 
 message_type_adapter = pydantic.TypeAdapter(Message)
 
 
-class GameResponse(pydantic.BaseModel):
+class BaseResposne(pydantic.BaseModel):
+    message_id: Literal["MESSAGE"] = "MESSAGE"
+
+
+class GameResponse(BaseResposne):
     message_id: Literal["GAME"] = "GAME"
     game: Game
+
+
+class RequestReadyResponse(BaseResposne):
+    message_id: Literal["WAIT_READY"] = "WAIT_READY"
+
+
+class MatchCancelResponse(BaseResposne):
+    message_id: Literal["MATCH_CANCEL"] = "MATCH_CANCEL"
+
+
+class MatchResultResponse(BaseResposne):
+    message_id: Literal["MATCH_RESULT"] = "MATCH_RESULT"
+    result: schemas.MatchResult
+    elo_change: int
+    coin_change: int
