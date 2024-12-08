@@ -9,8 +9,8 @@ import Header from "./header";
 import { faNetworkWired, faHandshake } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { SorterResult } from "antd/es/table/interface";
 import { liveMatches } from "@/apis/game";
+import Image from 'next/image'
 
 
 type ColumnsType<T extends object = object> = TableProps<T>['columns'];
@@ -110,7 +110,7 @@ const ranking = [
 
 export default function HomePage() {
 
-    const [userData, setUserData] = useSessionStorageState("userData");
+    const [userData, setUserData] = useSessionStorageState("userData", {listenStorageChange: true});
     const [_, setUserToken] = useSessionStorageState("googleToken");
     const [authToken, setAuthToken] = useLocalStorageState<string>("token");
     const [liveMatchData, setLiveMatchData] = useState();
@@ -162,20 +162,26 @@ export default function HomePage() {
                 {userData && (
                     <>
                         <div className="relative flex flex-col h-screen items-center gap-5 pb-16 pt-8 bg-primary-bg w-full">
-                            <div className="container flex flex-col items-center justify-center h-2/5 gap-3 w-full">
-                                <Link href="/game" className="flex self-center w-1/3">
-                                    <div className="bg-primary-element rounded-md justify-center flex text-center p-3 px-12 w-full gap-5">
-                                        <FontAwesomeIcon icon={faNetworkWired} size="2x" />
-                                        <p className="bold text-3xl">Play Online</p>
-                                    </div>
-                                </Link>
-                                <Link href="/game" className="flex self-center w-1/3">
-                                    <div className="bg-primary-element rounded-md justify-center flex text-center p-3 px-12 w-full gap-5">
-                                        <FontAwesomeIcon icon={faHandshake} size="2x" />
-                                        <p className="bold text-3xl">Play With Friend</p>
-                                    </div>
-                                </Link>
+                            <div className="container flex h-2/5 w-full gap-5">
+                                <div className="flex w-1/2 justify-end">
+                                    <img src="https://greenify.host/storage/temporary/ss1.png" alt="Picture of chessboard"></img>
+                                </div>
+                                <div className="flex flex-col items-center justify-center h-full gap-3 w-1/2">
+                                    <Link href="/game" className="flex self-center w-4/5">
+                                        <div className="bg-primary-element rounded-md justify-center flex text-center p-3 px-12 w-full gap-5">
+                                            <FontAwesomeIcon icon={faNetworkWired} size="2x" />
+                                            <p className="bold text-3xl">Play Online</p>
+                                        </div>
+                                    </Link>
+                                    <Link href="/game" className="flex self-center w-4/5">
+                                        <div className="bg-primary-element rounded-md justify-center flex text-center p-3 px-12 w-full gap-5">
+                                            <FontAwesomeIcon icon={faHandshake} size="2x" />
+                                            <p className="bold text-3xl">Play With Friend</p>
+                                        </div>
+                                    </Link>
+                                </div>
                             </div>
+                            
                             <div className="container flex h-3/5 w-full px-16 justify-between">
                                 <div className="conatiner h-full, w-1/3">
                                     <h1>Live Matches</h1>

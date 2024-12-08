@@ -85,7 +85,7 @@ const shopDataMock = [
 
 export default function Shop() {
 
-    const [userData, setUserData] = useSessionStorageState<UserData>("userData");
+    const [userData, setUserData] = useSessionStorageState<UserData>("userData", {listenStorageChange: true});
     const [authToken, setAuthToken] = useLocalStorageState<string>("token");
 
     const [shopData, setShopData] = useState<ShopSectionType[]>();
@@ -103,6 +103,7 @@ export default function Shop() {
 
     useRequest(itemList, {
         onSuccess: (data, params) => {
+            console.log(data);
             setShopData(data);
         },
         defaultParams: [authToken!!]  ,
@@ -127,7 +128,7 @@ export default function Shop() {
                     </Carousel>
 
                     <>
-                        {shopDataMock.map((category) =>
+                        {shopData?.categories.map((category) =>
                             <ShopSection name={category.name} items={category.items} clickBuyFn={clickByFunction} key={category.name}></ShopSection>
                         )}
                     </>

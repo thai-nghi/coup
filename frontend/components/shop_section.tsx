@@ -23,9 +23,9 @@ export default function ShopSection({ name, items, clickBuyFn }: ShopSectionProp
                 }}
             >
                 <div className="flex flex-col w-full">
-                    <Title level={1}>{name}</Title>
+                    <Title level={1}>{name.replace("_", " ")}</Title>
 
-                    <div className="flex flex-row gap-5 pt-5">
+                    <div className="flex flex-row gap-5 pt-5 w-full">
                         <List
                             grid={{ gutter: 16, column: 3 }}
                             dataSource={items}
@@ -33,7 +33,6 @@ export default function ShopSection({ name, items, clickBuyFn }: ShopSectionProp
                             renderItem={(item) => (
                                 <List.Item>
                                     <Card
-                                    style={{ width: 300, minWidth: 300 }}
                                     cover={
                                         <img
                                             alt="example"

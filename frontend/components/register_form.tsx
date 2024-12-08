@@ -47,7 +47,7 @@ export default function RegisterForm({ countries }: RegisterFormProps) {
     const [form] = Form.useForm();
 
     const [_, setToken] = useLocalStorageState('token');
-    const [userData, setUserData] = useSessionStorageState("userData");
+    const [userData, setUserData] = useSessionStorageState("userData", {listenStorageChange: true});
 
     const router = useRouter();
 

@@ -40,7 +40,7 @@ for (let row = 0; row < BOARD_ROWS; row++) {
 
 export default function GamePage() {
 
-    const [userData, setUserData] = useSessionStorageState<UserData>("userData");
+    const [userData, setUserData] = useSessionStorageState<UserData>("userData", {listenStorageChange: true});
     const [board, setBoard] = useState<BoardCell[][]>(BLANK_BOARD);
     const [userColor, setUserColor] = useState();
     const [opponentData, setOpponentData] = useState();
