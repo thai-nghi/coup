@@ -21,7 +21,7 @@ export default function Login() {
 
 
 
-  const [userData, setUserData] = useSessionStorageState<UserData>("userData");
+  const [userData, setUserData] = useSessionStorageState<UserData>("userData", {listenStorageChange: true});
   const [_, setUserToken] = useSessionStorageState("googleToken");
   const [authToken, setAuthToken] = useLocalStorageState<string>("token");
 

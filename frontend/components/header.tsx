@@ -11,12 +11,12 @@ import { faCrown, faCoins } from '@fortawesome/free-solid-svg-icons'
 
 import { Typography } from 'antd';
 import { UserData } from "@/types";
-import { matchHistorySummary } from "@/apis/user";
+import { getUserInfo, matchHistorySummary } from "@/apis/user";
 
 const { Title } = Typography;
 
 export default function Header() {
-    const [userData, setUserData] = useSessionStorageState<UserData>("userData");
+    const [userData, setUserData] = useSessionStorageState<UserData>("userData", {listenStorageChange: true});
     const [historySummary, setHistorySummary] = useState();
     const [authToken, setAuthToken] = useLocalStorageState<string>("token");
 
@@ -37,6 +37,12 @@ export default function Header() {
         defaultParams: [authToken!!]  ,
         ready: Boolean(authToken)
     })
+
+    useEffect(() => {
+        getUserInfo(authToken!!).then((res) => {
+            setUserData(res);
+        })
+    }, [authToken])
 
     return (
         <>

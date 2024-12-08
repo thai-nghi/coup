@@ -7,7 +7,7 @@ export async function itemList(token: string) {
         token
     });
 
-    return data?.data;
+    return data;
 }
 
 export async function buyItem(token: string, itemId: number) {
@@ -17,6 +17,6 @@ export async function buyItem(token: string, itemId: number) {
         token
     });
 
-    return data?.data;
+    return data;
 }
 

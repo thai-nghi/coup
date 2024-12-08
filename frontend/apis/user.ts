@@ -18,7 +18,7 @@ export async function getUserInfo(token: string) {
         token
     });
 
-    return data?.data;
+    return data;
 }
 
 export async function login(props: Record<string, any>) {

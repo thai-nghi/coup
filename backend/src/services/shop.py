@@ -18,9 +18,13 @@ async def all_items(db_session: AsyncSession) -> response.ShopResponse:
     categories = defaultdict(list)
 
     for item in items:
-        categories[item.type.value.capitalize()].append(item)
+        categories[item.item_type.name].append(item)
 
-    return response.ShopResponse(categories=categories)
+    result = []
+    for category, data in categories.items():
+        result.append(schemas.ItemCategory(name=category, items=data))
+
+    return response.ShopResponse(categories=result)
 
 
 async def buy_item(

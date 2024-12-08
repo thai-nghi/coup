@@ -11,7 +11,12 @@ from src.endpoints.webhook import router as webhook_router
 
 app = FastAPI(default_response_class=ORJSONResponse)
 
-origins = ["http://localhost", "http://localhost:8080", "*"]
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://192.168.31.115",
+    "http://192.168.31.115:3000",
+]
 
 app.add_middleware(
     CORSMiddleware,

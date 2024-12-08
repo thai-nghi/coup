@@ -133,7 +133,7 @@ class ShopItem(BaseModel):
     description: str
     price: int
     banner_pic: str
-    type: ItemType
+    item_type: ItemType
 
 
 class PlayerResult(BaseModel):

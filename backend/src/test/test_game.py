@@ -14,7 +14,7 @@ async def test_new_match(test_app, test_settings):
         response = await client.post(
             "/webhooks/game/new_game",
             json={
-                "match_id": 1,
+                "match_id": "1_2",
                 "player_data": [
                     {"player_id": 1, "elo": 1010, "display_name": "Amiya"},
                     {"player_id": 2, "elo": 1010, "display_name": "Blaze"},
@@ -39,7 +39,7 @@ async def test_submit_result(test_app, test_settings, amiya_client, live_matches
         response = await client.post(
             "/webhooks/game/result",
             json={
-                "match_id": 1,
+                "match_id": "1_2",
                 "match_replay": "",
                 "move_first_player": 1,
                 "player_result": [

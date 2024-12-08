@@ -17,10 +17,10 @@
     },
     {
         "id": 3,
-        "name": "Sarkaz Chessback",
-        "price": 20000,
-        "description": "Chessback with elements from Sarkaz",
-        "banner_pic": "",
+        "name": "Shu Chessback",
+        "price": 100,
+        "description": "Chessback with shu's party",
+        "banner_pic": "https://webusstatic.yo-star.com/ark_us_web/assets/172319083676614546/0d451f5b68cd433ca3a5371b42ffebc7.jpg",
         "item_type": "CHESS_BACK"
     }
 ]
