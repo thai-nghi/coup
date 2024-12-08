@@ -17,6 +17,7 @@ const { Title } = Typography;
 const BOARD_COLUMNS = 9;
 const BOARD_ROWS = 10;
 
+const serverUrl: string = process.env.NEXT_PUBLIC_WSS_URL;
 
 const BLANK_BOARD: BoardCell[][] = [];
 
@@ -117,7 +118,7 @@ export default function GamePage() {
         }
     }
     const { readyState, sendMessage, disconnect, connect } = useWebSocket(
-        'ws://192.168.31.115:4000/',
+        serverUrl,
         {
             onMessage: handleWsMessage,
             manual: true

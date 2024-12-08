@@ -4,7 +4,7 @@
         "name": "Originum Chessboard",
         "price": 200,
         "description": "Chessboard with originum pattern",
-        "banner_pic": "",
+        "banner_pic": "https://webusstatic.yo-star.com/ark_us_web/assets/166660891884810990/9e606e7b57d913d15a47d82a8f7728e9.jpg",
         "item_type": "CHESS_BOARD"
     },
     {
@@ -12,7 +12,7 @@
         "name": "Orirock Chessback",
         "price": 20000,
         "description": "Chessback decor with orirock",
-        "banner_pic": "",
+        "banner_pic": "https://webusstatic.yo-star.com/ark_us_web/assets/166202088270014362/a311e97b62e249790ba85d4459102b39.jpg",
         "item_type": "CHESS_BACK"
     },
     {
