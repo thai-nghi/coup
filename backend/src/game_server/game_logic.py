@@ -222,7 +222,7 @@ def compute_canon_moves(piece_color, row, col, board):
                     if board[curr_y][curr_x].chessPiece:
                         if board[curr_y][curr_x].chessPiece.color != piece_color:
                             result.append({"row": curr_y, "col": curr_x})
-                            break
+                        break
                 break
             else:
                 result.append({"row": curr_y, "col": curr_x})

@@ -101,8 +101,8 @@ function computeCanonMoves(pieceColor, row: number, col: number, board) {
                     if (board[currY][currX].chessPiece) {
                         if (board[currY][currX].chessPiece.color != pieceColor) {
                             result.push({ row: currY, col: currX });
-                            break;
                         }
+                        break;
                     }
                 }
                 break;
