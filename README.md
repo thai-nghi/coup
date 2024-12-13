@@ -10,6 +10,7 @@ Right now, you can create an account, login, view the shop and play matches onli
 
 # Guide to use
 Since there's no tutorial available for the game yet. Please contact me for instruction how to play.
+You can use 2 browsers to create 2 accounts and play with yourself to test out the features of the game.
 
 
 # Local development
